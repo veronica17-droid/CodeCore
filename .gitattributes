@@ -1,0 +1,13 @@
+# Normaliza finales de línea para que el repo sea consistente en Windows/Linux/macOS.
+* text=auto eol=lf
+
+# Los scripts de PowerShell necesitan CRLF para ejecutarse sin sorpresas.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binarios: no tocar.
+*.ico binary
+*.png binary
+*.exe binary
+*.dll binary
