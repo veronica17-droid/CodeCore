@@ -17,27 +17,59 @@ sys.path.insert(0, str(ROOT / "src"))
 from core.content import ContentError, ContentRepository  # noqa: E402
 
 
-def check_urls(repository: ContentRepository) -> int:
-    """Comprueba que las URLs responden. Requiere conexión a internet."""
-    import urllib.error
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+)
+
+
+def _request_status(url: str, method: str) -> int:
     import urllib.request
+
+    request = urllib.request.Request(
+        url,
+        method=method,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "text/html,application/xhtml+xml",
+            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=20) as response:
+        return getattr(response, "status", 200)
+
+
+def check_urls(repository: ContentRepository) -> int:
+    """Comprueba que las URLs responden. Requiere conexión a internet.
+
+    Algunos servidores rechazan HEAD con 403/405; en ese caso se reintenta con
+    GET antes de dar la URL por fallida.
+    """
+    import urllib.error
 
     failures = 0
     for resource in repository.resources:
-        request = urllib.request.Request(
-            resource.url,
-            method="HEAD",
-            headers={"User-Agent": "Mozilla/5.0 (CodeCore content check)"},
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=15) as response:
-                status = getattr(response, "status", 200)
-            if status >= 400:
-                print(f"[URL {status}] {resource.id}: {resource.url}")
-                failures += 1
-        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-            print(f"[URL ERROR] {resource.id}: {resource.url} -> {exc}")
+        status: int | None = None
+        error: object | None = None
+        for method in ("HEAD", "GET"):
+            try:
+                status = _request_status(resource.url, method)
+                error = None
+                break
+            except urllib.error.HTTPError as exc:
+                status = exc.code
+                error = exc
+                if exc.code not in (403, 405, 501):
+                    break
+            except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+                status = None
+                error = exc
+                break
+        if status is None or status >= 400:
+            print(f"[URL ERROR {status}] {resource.id}: {resource.url} -> {error}")
             failures += 1
+        else:
+            print(f"[URL {status}] {resource.id}")
     return failures
 
 

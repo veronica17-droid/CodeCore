@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "resources": [
+    {
+      "id": "res_python_tutorial",
+      "title": "El tutorial de Python (documentación oficial)",
+      "type": "doc",
+      "url": "https://docs.python.org/es/3/tutorial/",
+      "level": "todos",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "Recorrido oficial del lenguaje en español: tipos, control de flujo, estructuras de datos, funciones, errores y clases. La referencia para comprobar cualquier duda de sintaxis.",
+      "free": true
+    },
+    {
+      "id": "res_cs50",
+      "title": "CS50x: Introducción a las ciencias de la computación",
+      "type": "curso",
+      "url": "https://cs50.harvard.edu/x/",
+      "level": "todos",
+      "language": "general",
+      "source": "Harvard University",
+      "description": "Curso universitario abierto que enseña a pensar en algoritmos antes que en lenguajes. Incluye vídeos, problemas y un entorno de prácticas.",
+      "free": true
+    },
+    {
+      "id": "res_think_python",
+      "title": "Think Python (3.ª edición)",
+      "type": "libro",
+      "url": "https://allendowney.github.io/ThinkPython/",
+      "level": "principiante",
+      "language": "python",
+      "source": "Allen B. Downey",
+      "description": "Libro gratuito en línea que trata la programación como una forma de pensar: descomposición, depuración y experimentación antes que memorización.",
+      "free": true
+    },
+    {
+      "id": "res_python_control",
+      "title": "Control de flujo en Python",
+      "type": "doc",
+      "url": "https://docs.python.org/es/3/tutorial/controlflow.html",
+      "level": "principiante",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "Capítulo oficial sobre if, for, range, while y break. Explica con ejemplos cómo se decide y se repite el trabajo.",
+      "free": true
+    },
+    {
+      "id": "res_automate",
+      "title": "Automate the Boring Stuff with Python",
+      "type": "libro",
+      "url": "https://automatetheboringstuff.com/",
+      "level": "principiante",
+      "language": "python",
+      "source": "Al Sweigart",
+      "description": "Libro gratuito orientado a tareas reales: archivos, hojas de cálculo, correo y web. Ideal para convertir la sintaxis en algo útil.",
+      "free": true
+    },
+    {
+      "id": "res_freecodecamp_python",
+      "title": "freeCodeCamp: Computación científica con Python",
+      "type": "curso",
+      "url": "https://www.freecodecamp.org/learn/scientific-computing-with-python/",
+      "level": "principiante",
+      "language": "python",
+      "source": "freeCodeCamp",
+      "description": "Curso interactivo con retos y proyectos guiados. Refuerza variables, funciones, bucles y estructuras de datos practicando.",
+      "free": true
+    },
+    {
+      "id": "res_python_functions",
+      "title": "Definir funciones (documentación oficial)",
+      "type": "doc",
+      "url": "https://docs.python.org/es/3/tutorial/controlflow.html#defining-functions",
+      "level": "principiante",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "Sección oficial sobre def, parámetros, return y valores por defecto. El contrato de una función explicado con ejemplos mínimos.",
+      "free": true
+    },
+    {
+      "id": "res_python_lists",
+      "title": "Listas en Python",
+      "type": "doc",
+      "url": "https://docs.python.org/es/3/tutorial/introduction.html#lists",
+      "level": "principiante",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "Introducción oficial a las listas: indexación, slicing, concatenación y mutación. La base para recorrer colecciones de datos.",
+      "free": true
+    },
+    {
+      "id": "res_realpython",
+      "title": "Real Python",
+      "type": "referencia",
+      "url": "https://realpython.com/",
+      "level": "intermedio",
+      "language": "python",
+      "source": "Real Python",
+      "description": "Tutoriales y guías prácticas de Python, desde fundamentos hasta buenas prácticas, testing y rendimiento. Gran parte del catálogo es gratuita; el resto requiere suscripción.",
+      "free": false
+    },
+    {
+      "id": "res_python_dict",
+      "title": "Diccionarios (documentación oficial)",
+      "type": "doc",
+      "url": "https://docs.python.org/es/3/tutorial/datastructures.html#dictionaries",
+      "level": "intermedio",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "Sección oficial sobre diccionarios: claves, valores, recorrido y métodos como get(). La estructura para buscar por significado.",
+      "free": true
+    },
+    {
+      "id": "res_python_errors",
+      "title": "Errores y excepciones en Python",
+      "type": "doc",
+      "url": "https://docs.python.org/es/3/tutorial/errors.html",
+      "level": "avanzado",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "Capítulo oficial sobre try/except/else/finally y la jerarquía de excepciones. Explica cómo fallar de forma controlada.",
+      "free": true
+    },
+    {
+      "id": "res_python_pep8",
+      "title": "PEP 8: guía de estilo para código Python",
+      "type": "referencia",
+      "url": "https://peps.python.org/pep-0008/",
+      "level": "intermedio",
+      "language": "python",
+      "source": "Python Software Foundation",
+      "description": "El estándar de legibilidad del código Python: nombres, indentación, imports y estructura. Útil para que otras personas lean lo que escribes.",
+      "free": true
+    },
+    {
+      "id": "res_bigocheatsheet",
+      "title": "Big-O Cheat Sheet",
+      "type": "referencia",
+      "url": "https://www.bigocheatsheet.com/",
+      "level": "avanzado",
+      "language": "general",
+      "source": "Eric Rowell",
+      "description": "Tabla de complejidad temporal y espacial de estructuras y algoritmos comunes. Consulta rápida para comparar soluciones.",
+      "free": true
+    },
+    {
+      "id": "res_visualgo",
+      "title": "VisuAlgo",
+      "type": "herramienta",
+      "url": "https://visualgo.net/en",
+      "level": "avanzado",
+      "language": "general",
+      "source": "VisuAlgo",
+      "description": "Visualizaciones interactivas de estructuras de datos y algoritmos. Permite ver cómo cambia el estado paso a paso.",
+      "free": true
+    },
+    {
+      "id": "res_opensource_guide",
+      "title": "Open Source Guides",
+      "type": "doc",
+      "url": "https://opensource.guide/es/",
+      "level": "intermedio",
+      "language": "git",
+      "source": "GitHub",
+      "description": "Guías en español para colaborar en proyectos abiertos: cómo empezar, escribir buenos issues y revisar código.",
+      "free": true
+    }
+  ]
+}

@@ -63,10 +63,33 @@ class ContentRepositoryTest(unittest.TestCase):
 
     def test_search_delegates_to_library(self) -> None:
         results = self.repo.search_resources("python")
-        self.assertEqual(len(results), len(self.repo.resources))
+        self.assertTrue(results)
+        ids = {item.id for item in results}
+        self.assertTrue(ids.issubset({resource.id for resource in self.repo.resources}))
+        self.assertIn("res_python_tutorial", ids)
+        self.assertNotIn("res_opensource_guide", ids)
 
     def test_missing_resource_ids_is_a_set(self) -> None:
         self.assertIsInstance(self.repo.missing_resource_ids(), set)
+
+    def test_library_resolves_every_referenced_resource(self) -> None:
+        self.assertEqual(self.repo.missing_resource_ids(), set())
+        self.assertEqual(len(self.repo.resources), 15)
+        self.assertEqual(len({resource.id for resource in self.repo.resources}), 15)
+
+    def test_resources_for_lesson_keep_declared_order(self) -> None:
+        lesson = self.repo.get_lesson("beg_01_orden")
+        assert lesson is not None
+        resources = self.repo.resources_for_lesson(lesson)
+        self.assertEqual([item.id for item in resources], list(lesson.resource_ids))
+        self.assertTrue(all(item.url.startswith("https://") for item in resources))
+
+    def test_every_resource_has_metadata_for_filters(self) -> None:
+        for resource in self.repo.resources:
+            self.assertIn(resource.level, {"principiante", "intermedio", "avanzado", "todos"})
+            self.assertTrue(resource.source)
+            self.assertTrue(resource.description)
+            self.assertGreater(len(resource.description), 30)
 
     def test_invalid_json_raises_content_error(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
