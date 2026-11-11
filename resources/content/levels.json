@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "levels": [
+    {
+      "id": "beginner",
+      "name": "Principiante",
+      "order": 1,
+      "tagline": "Nunca has programado, o solo has visto código de lejos.",
+      "description": "Vas a aprender a pensar como una máquina: dar órdenes precisas, guardar estado, tomar decisiones y repetir sin copiar. Python es el lenguaje, pero lo importante es el razonamiento.",
+      "outcomes": [
+        "Descomponer un problema cotidiano en pasos que una máquina pueda ejecutar",
+        "Explicar qué es una variable y cómo cambia el estado de un programa",
+        "Escribir decisiones y bucles con un propósito claro",
+        "Reutilizar lógica con funciones en lugar de copiar y pegar"
+      ],
+      "estimated_minutes": 75,
+      "lesson_ids": [
+        "beg_01_orden",
+        "beg_02_variables",
+        "beg_03_decisiones",
+        "beg_04_bucles",
+        "beg_05_funciones"
+      ]
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermedio",
+      "order": 2,
+      "tagline": "Ya usas variables, condiciones y bucles, pero te cuesta organizar programas medianos.",
+      "description": "El foco pasa de la sintaxis a la estructura: colecciones de datos, descomposición en funciones pequeñas, depuración metódica y casos límite.",
+      "outcomes": [
+        "Elegir entre lista y diccionario según la pregunta que quieras responder",
+        "Dividir un problema en funciones con una responsabilidad cada una",
+        "Encontrar errores leyendo el estado, no adivinando",
+        "Probar casos normales, vacíos y extremos antes de dar algo por terminado"
+      ],
+      "estimated_minutes": 90,
+      "lesson_ids": [
+        "int_01_listas",
+        "int_02_diccionarios",
+        "int_03_descomponer",
+        "int_04_depurar"
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Avanzado",
+      "order": 3,
+      "tagline": "Ya construyes programas pequeños y quieres pensar en coste, errores y diseño.",
+      "description": "Aquí no se trata de escribir más código, sino de elegir mejor: recursión con caso base, complejidad, manejo de errores y decisiones de diseño que se puedan defender.",
+      "outcomes": [
+        "Reconocer cuándo una solución recursiva simplifica el problema",
+        "Estimar el coste de un algoritmo y justificar la elección",
+        "Fallar de forma controlada ante datos inválidos",
+        "Diseñar funciones predecibles que no sorprendan a quien las usa"
+      ],
+      "estimated_minutes": 80,
+      "lesson_ids": [
+        "adv_01_recursion",
+        "adv_02_complejidad",
+        "adv_03_errores",
+        "adv_04_diseno"
+      ]
+    }
+  ]
+}

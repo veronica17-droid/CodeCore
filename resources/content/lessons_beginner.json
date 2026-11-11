@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "level_id": "beginner",
+  "lessons": [
+    {
+      "id": "beg_01_orden",
+      "level_id": "beginner",
+      "order": 1,
+      "title": "El orden importa",
+      "concept": "Secuencia de instrucciones",
+      "minutes": 12,
+      "problem": {
+        "scenario": "Un robot de cocina no adivina. Solo ejecuta las órdenes que recibe, una detrás de otra. Si le dices «prepara un sándwich», se queda bloqueado: no sabe qué significa. Si le das las órdenes en el orden equivocado, unta el pan antes de cortarlo y el resultado es un desastre.",
+        "question": "¿Qué secuencia mínima de órdenes produce un sándwich sin que el robot tenga que interpretar nada?",
+        "constraints": [
+          "Cada orden debe ser una acción observable y concreta.",
+          "El pan no puede untarse antes de cortarse.",
+          "El sándwich no puede cerrarse antes de untarse.",
+          "No puedes saltarte pasos ni escribir intenciones («preparar») en lugar de acciones."
+        ],
+        "reflection": "Antes de escribir código, pregúntate: ¿qué depende de qué?"
+      },
+      "guide": {
+        "mental_model": "Un programa es una receta ejecutada al pie de la letra. La máquina no completa huecos con sentido común: si un paso falta o está desordenado, el resultado cambia.",
+        "steps": [
+          {
+            "title": "1. Divide en acciones atómicas",
+            "body": "Sustituye «preparar el sándwich» por acciones que se puedan ver: cortar, untar, cerrar. Si una orden contiene dos acciones, sepárala."
+          },
+          {
+            "title": "2. Dibuja las dependencias",
+            "body": "Pregunta qué paso necesita que otro haya terminado antes. Untar necesita el pan cortado; cerrar necesita el pan untado. Ese dibujo es el orden del programa."
+          },
+          {
+            "title": "3. Comprueba el orden mentalmente",
+            "body": "Recorre la secuencia como si fueras el robot, sin suponer nada. Si en algún punto necesitas algo que aún no existe, el orden está mal."
+          }
+        ],
+        "questions": [
+          "¿Qué paso no puede ocurrir antes que otro y por qué?",
+          "¿Alguna de tus órdenes es en realidad dos acciones disfrazadas?",
+          "Si eliminaras la segunda orden, ¿el robot podría terminar igual? ¿Qué demuestra eso?"
+        ],
+        "common_mistakes": [
+          "Escribir «preparar el sándwich»: es un objetivo, no una instrucción ejecutable.",
+          "Confundir el orden lógico con el orden en que lo haría una persona con experiencia.",
+          "Olvidar un paso porque «se sobreentiende»; la máquina no sobreentiende."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Escribe exactamente tres print(), uno por línea, que ordenen al robot cortar el pan, untarlo y cerrar el sándwich, en ese orden. Usa palabras que contengan «cortar», «untar» y «cerrar».",
+        "language": "python",
+        "starter_code": "# El robot solo entiende órdenes concretas.\n# Escribe una orden por línea, en el orden correcto.\nprint(\"...\")\n",
+        "checks": [
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 3,
+            "max": 3,
+            "message": "Necesitamos exactamente tres órdenes ejecutables, una por paso. Ni una intención suelta ni cuatro pasos."
+          },
+          {
+            "type": "regex",
+            "value": "cort\\w*[\\s\\S]*unt\\w*[\\s\\S]*cierr\\w*",
+            "flags": "i",
+            "message": "El orden no respeta las dependencias: primero se corta, después se unta y al final se cierra."
+          },
+          {
+            "type": "not_contains",
+            "value": "TODO",
+            "message": "Queda un TODO en el código. El robot no puede ejecutar una intención pendiente."
+          }
+        ],
+        "hints": [
+          "¿Qué paso necesita que otro haya terminado antes?",
+          "Escribe acciones observables: «cortar el pan», no «preparar el sándwich».",
+          "La primera orden debe cortar y la última debe cerrar. La del medio, untar."
+        ],
+        "solution": "print(\"Cortar el pan\")\nprint(\"Untar el pan\")\nprint(\"Cerrar el sándwich\")"
+      },
+      "success_criteria": [
+        "Hay tres instrucciones ejecutables, una por línea.",
+        "El orden respeta las dependencias entre pasos.",
+        "Otra persona podría ejecutar la secuencia sin preguntarte nada."
+      ],
+      "resource_ids": ["res_python_tutorial", "res_cs50"]
+    },
+    {
+      "id": "beg_02_variables",
+      "level_id": "beginner",
+      "order": 2,
+      "title": "Variables: dar nombre al estado",
+      "concept": "Variables y asignación",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Tienes dos vasos, A y B. El vaso A contiene 3 unidades de agua y el B, 8. Quieres que A termine con 8 y B con 3, sin mezclar el contenido y sin usar un tercer vaso lleno.",
+        "question": "¿Cómo intercambias el contenido de dos variables sin perder ningún valor?",
+        "constraints": [
+          "No puedes escribir directamente los valores finales (a = 8, b = 3): eso no es intercambiar, es reemplazar.",
+          "Solo puedes asignar un valor cada vez.",
+          "Al terminar, a debe valer 8 y b debe valer 3."
+        ],
+        "reflection": "El problema no es la sintaxis: es que al sobrescribir una variable destruyes su valor anterior."
+      },
+      "guide": {
+        "mental_model": "Una variable es una caja etiquetada. Asignar no compara ni declara: guarda un valor y olvida el anterior. Si necesitas el anterior después, debes copiarlo antes de sobrescribirlo.",
+        "steps": [
+          {
+            "title": "1. Sigue el estado paso a paso",
+            "body": "Haz una tabla con columnas a, b y temp. Anota el valor de cada una después de cada línea. Si en algún momento un valor se pierde, lo verás en la tabla."
+          },
+          {
+            "title": "2. Identifica el momento de la pérdida",
+            "body": "Al hacer a = b, el valor original de a desaparece. Por eso hay que guardarlo antes en una variable temporal."
+          },
+          {
+            "title": "3. Ordena las tres asignaciones",
+            "body": "Primero copia el valor que vas a destruir; después sobrescribe; finalmente recupera la copia. Ese patrón se repite en muchos problemas de estado."
+          }
+        ],
+        "questions": [
+          "Después de a = b, ¿qué valor se ha perdido?",
+          "¿Por qué no basta con hacer a = b y b = a?",
+          "¿Qué representa exactamente la variable temporal en la metáfora de los vasos?"
+        ],
+        "common_mistakes": [
+          "Hacer a = b y b = a: ambas terminan con el mismo valor.",
+          "Crear la temporal después de sobrescribir a: ya es tarde.",
+          "Confundir el nombre de la variable con el valor que contiene."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Completa el programa para intercambiar a y b usando una variable temporal llamada temp. Al final, print(a) debe mostrar 8 y print(b) debe mostrar 3.",
+        "language": "python",
+        "starter_code": "a = 3\nb = 8\n\n# Intercambia los valores usando una variable temporal.\n\nprint(a)  # debe imprimir 8\nprint(b)  # debe imprimir 3\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "assign",
+            "min": 4,
+            "message": "Faltan asignaciones: además de a y b necesitas guardar una copia y reasignar las dos variables."
+          },
+          {
+            "type": "regex",
+            "value": "temp\\s*=\\s*a",
+            "message": "Guarda el valor de a en temp antes de sobrescribir a. Si lo haces después, el valor ya se perdió."
+          },
+          {
+            "type": "regex",
+            "value": "a\\s*=\\s*b[\\s\\S]*b\\s*=\\s*temp",
+            "message": "El orden es: a toma el valor de b y después b recupera la copia guardada en temp."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 2,
+            "max": 2,
+            "message": "Deja las dos comprobaciones finales: una para a y otra para b."
+          }
+        ],
+        "hints": [
+          "Antes de cambiar a, guarda su valor en temp.",
+          "Después de temp = a, ya puedes hacer a = b sin miedo.",
+          "La última asignación recupera el valor original de a desde temp."
+        ],
+        "solution": "a = 3\nb = 8\n\ntemp = a\na = b\nb = temp\n\nprint(a)  # 8\nprint(b)  # 3"
+      },
+      "success_criteria": [
+        "Ningún valor se pierde durante el intercambio.",
+        "La variable temporal se usa con un propósito claro.",
+        "Puedes explicar qué contiene cada variable después de cada línea."
+      ],
+      "resource_ids": ["res_python_tutorial", "res_think_python"]
+    },
+    {
+      "id": "beg_03_decisiones",
+      "level_id": "beginner",
+      "order": 3,
+      "title": "Decisiones: si pasa esto, haz aquello",
+      "concept": "Condicionales y comparaciones",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Un robot de vestuario debe decidir cada mañana. Tiene un dato: la probabilidad de lluvia en porcentaje. Si supera el 50 %, lleva paraguas; si no, lleva gafas de sol. No puede llevar las dos cosas ni quedarse sin decidir.",
+        "question": "¿Cómo escribes una decisión que funcione para cualquier probabilidad, no solo para el día de hoy?",
+        "constraints": [
+          "La decisión debe depender de la variable probabilidad_lluvia.",
+          "Debe existir una rama para llover y otra para no llover.",
+          "No vale escribir la respuesta directamente: el programa debe decidir."
+        ],
+        "reflection": "Una condición no es una pregunta al usuario: es una pregunta al estado del programa."
+      },
+      "guide": {
+        "mental_model": "Un if es una bifurcación en el camino. El programa evalúa una condición booleana (verdadero o falso) y recorre solo una de las ramas. La otra queda como posibilidad no ejecutada.",
+        "steps": [
+          {
+            "title": "1. Formula la condición como una pregunta cerrada",
+            "body": "«¿probabilidad_lluvia es mayor que 50?» se traduce a probabilidad_lluvia > 50. Debe poder responderse con verdadero o falso."
+          },
+          {
+            "title": "2. Escribe la rama afirmativa",
+            "body": "Lo que ocurre cuando la condición es verdadera va indentado bajo el if. Esa indentación no es estética: define qué líneas pertenecen a la rama."
+          },
+          {
+            "title": "3. Cubre el caso contrario",
+            "body": "El else garantiza que el programa siempre decida algo. Sin else, ante una condición falsa no ocurre nada y el robot se queda sin instrucción."
+          }
+        ],
+        "questions": [
+          "¿Qué valor de probabilidad_lluvia hace falsa tu condición?",
+          "Si cambias 50 por 70, ¿qué días cambian de decisión?",
+          "¿Qué pasaría si no escribieras el else?"
+        ],
+        "common_mistakes": [
+          "Usar = (asignación) en lugar de > (comparación).",
+          "Olvidar la indentación y dejar las dos ramas fuera del if.",
+          "Escribir una condición que siempre es verdadera, como if True."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Completa el programa: si probabilidad_lluvia es mayor que 50, imprime «Lleva paraguas»; en caso contrario, imprime «Lleva gafas».",
+        "language": "python",
+        "starter_code": "probabilidad_lluvia = 70\n\n# Decide e imprime el objeto correcto.\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "if",
+            "min": 1,
+            "message": "Falta la estructura de decisión: usa if para evaluar la probabilidad."
+          },
+          {
+            "type": "regex",
+            "value": "probabilidad_lluvia\\s*>\\s*50",
+            "message": "La condición debe comparar probabilidad_lluvia con 50 usando >, no escribir el resultado a mano."
+          },
+          {
+            "type": "regex",
+            "value": "else\\s*:",
+            "message": "Falta la rama else: el robot necesita una instrucción también cuando no llueve."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 2,
+            "max": 2,
+            "message": "Cada rama debe imprimir exactamente una decisión: paraguas o gafas."
+          },
+          {
+            "type": "not_contains",
+            "value": "if True",
+            "message": "if True siempre entra en la misma rama: no es una decisión, es una orden disfrazada."
+          }
+        ],
+        "hints": [
+          "La condición se escribe con >, no con =.",
+          "La línea del if termina en dos puntos.",
+          "Las dos ramas deben estar indentadas y cada una imprime una sola cosa."
+        ],
+        "solution": "probabilidad_lluvia = 70\n\nif probabilidad_lluvia > 50:\n    print(\"Lleva paraguas\")\nelse:\n    print(\"Lleva gafas\")"
+      },
+      "success_criteria": [
+        "La condición usa el dato probabilidad_lluvia.",
+        "Las dos ramas son alcanzables con datos distintos.",
+        "Puedes predecir la salida para 0, 50 y 100 sin ejecutar el programa."
+      ],
+      "resource_ids": ["res_python_control", "res_automate"]
+    },
+    {
+      "id": "beg_04_bucles",
+      "level_id": "beginner",
+      "order": 4,
+      "title": "Repetición: no repitas, itera",
+      "concept": "Bucles for y range",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Tienes que regar 7 plantas. Si escribes 7 print() distintos, mañana tendrás 20 plantas y tendrás que reescribir el programa. El número de plantas va a cambiar; la acción es siempre la misma.",
+        "question": "¿Cómo escribes la acción una sola vez y dejas que el programa la repita el número de veces necesario?",
+        "constraints": [
+          "La acción de regar debe aparecer una sola vez en el código.",
+          "El número de plantas debe estar en un solo lugar fácil de cambiar.",
+          "Debes usar un bucle for y range.",
+          "La numeración de las plantas empieza en 1 y termina en 7."
+        ],
+        "reflection": "Un bucle no es «copiar y pegar más rápido»: es expresar el patrón que se repite."
+      },
+      "guide": {
+        "mental_model": "Un for recorre una secuencia de valores. En cada vuelta, la variable del bucle toma el siguiente valor y ejecuta el cuerpo. El cuerpo se escribe una vez; el número de vueltas lo decide la secuencia.",
+        "steps": [
+          {
+            "title": "1. Distingue lo constante de lo variable",
+            "body": "La acción es siempre «regar». Lo que cambia es el número de planta. El bucle debe encargarse de la parte variable."
+          },
+          {
+            "title": "2. Elige el rango correcto",
+            "body": "range(1, 8) produce 1,2,3,4,5,6,7. El segundo número no se incluye; por eso 8, no 7. Este detalle es la fuente número uno de errores off-by-one."
+          },
+          {
+            "title": "3. Mete la acción dentro del cuerpo",
+            "body": "La línea que riega debe estar indentada bajo el for. Si queda fuera, se ejecuta una sola vez después del bucle."
+          }
+        ],
+        "questions": [
+          "¿Cuántas veces se ejecuta el cuerpo si el rango es range(1, 8)?",
+          "¿Qué cambiarías para regar 100 plantas?",
+          "¿Qué diferencia hay entre range(1, 8) y range(8)?"
+        ],
+        "common_mistakes": [
+          "Usar range(1, 7) y regar solo 6 plantas.",
+          "Dejar el print fuera del bucle por error de indentación.",
+          "Escribir siete print() distintos y llamarlo bucle."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Escribe un bucle que imprima «Regando planta 1» hasta «Regando planta 7», usando una sola línea de print dentro del bucle.",
+        "language": "python",
+        "starter_code": "# Una sola acción, repetida por el bucle.\nfor numero in range(...):\n    print(...)\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "for",
+            "min": 1,
+            "message": "Falta el bucle for: la acción debe repetirse sin escribirla siete veces."
+          },
+          {
+            "type": "regex",
+            "value": "range\\(\\s*1\\s*,\\s*8\\s*\\)",
+            "message": "range(1, 8) genera del 1 al 7. Si pones 7 como límite, la última planta se queda sin regar."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "max": 2,
+            "message": "La acción de regar debe aparecer una sola vez dentro del bucle, no repetida línea a línea."
+          },
+          {
+            "type": "regex",
+            "value": "for[\\s\\S]*print",
+            "message": "El print debe estar dentro del cuerpo del for, no después."
+          }
+        ],
+        "hints": [
+          "range(1, 8) incluye el 1 y excluye el 8.",
+          "La variable del bucle, numero, cambia en cada vuelta.",
+          "Usa f-string: f\"Regando planta {numero}\"."
+        ],
+        "solution": "for numero in range(1, 8):\n    print(f\"Regando planta {numero}\")"
+      },
+      "success_criteria": [
+        "La acción aparece una sola vez en el código.",
+        "Cambiar el número de plantas requiere editar un solo valor.",
+        "La numeración empieza en 1 y llega hasta 7, sin repetir ni saltar."
+      ],
+      "resource_ids": ["res_python_control", "res_freecodecamp_python"]
+    },
+    {
+      "id": "beg_05_funciones",
+      "level_id": "beginner",
+      "order": 5,
+      "title": "Funciones: empaquetar una idea",
+      "concept": "Funciones, parámetros y return",
+      "minutes": 18,
+      "problem": {
+        "scenario": "Tu programa saluda a tres personas en tres lugares distintos. Al principio copias el mismo print y cambias el nombre. Funciona hasta que decides que el saludo debe decir «Buenos días» en lugar de «Hola»: ahora tienes que encontrar y cambiar tres copias, y olvidarás una.",
+        "question": "¿Cómo escribes el saludo una sola vez y lo reutilizas con nombres distintos?",
+        "constraints": [
+          "El saludo debe estar definido una sola vez.",
+          "La función debe recibir el nombre como parámetro.",
+          "Debe devolver el texto con return, no imprimirlo por dentro.",
+          "Debe usarse al menos con dos nombres distintos."
+        ],
+        "reflection": "Una función no es solo código reutilizable: es un contrato con un nombre."
+      },
+      "guide": {
+        "mental_model": "Una función es una máquina pequeña: recibe datos (parámetros), hace un trabajo y devuelve un resultado (return). Definir no ejecuta; llamar ejecuta.",
+        "steps": [
+          {
+            "title": "1. Ponle nombre a la intención",
+            "body": "saludar describe qué hace, no cómo lo hace. Un buen nombre evita tener que leer el cuerpo para entender la llamada."
+          },
+          {
+            "title": "2. Decide qué entra y qué sale",
+            "body": "Entra un nombre; sale un texto. Si la función imprimiera por dentro, no podrías usar el saludo para componer otro mensaje ni probarlo fácilmente."
+          },
+          {
+            "title": "3. Define una vez, llama muchas",
+            "body": "La definición se escribe una vez. Cada llamada con un argumento distinto produce un resultado distinto. Cambiar el formato del saludo es editar una sola línea."
+          }
+        ],
+        "questions": [
+          "¿Qué diferencia hay entre definir saludar y llamar a saludar?",
+          "¿Por qué conviene return en lugar de print dentro de la función?",
+          "Si mañana el saludo cambia, ¿cuántas líneas tienes que tocar?"
+        ],
+        "common_mistakes": [
+          "Imprimir dentro de la función y no devolver nada.",
+          "Llamar a la función antes de definirla.",
+          "Olvidar pasar el argumento y provocar un TypeError."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Define saludar(nombre) que devuelva «Hola, <nombre>» usando return. Después llama a la función con «Ana» y con «Luis» e imprime los dos resultados.",
+        "language": "python",
+        "starter_code": "# Define la función y luego úsala dos veces.\ndef saludar(nombre):\n    ...\n\nprint(...)\nprint(...)\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 1,
+            "message": "Falta la definición de la función: usa def saludar(nombre):."
+          },
+          {
+            "type": "ast",
+            "value": "return",
+            "min": 1,
+            "message": "La función debe devolver el saludo con return; imprimir por dentro no permite reutilizarlo."
+          },
+          {
+            "type": "regex",
+            "value": "def\\s+saludar\\s*\\(\\s*nombre\\s*\\)",
+            "message": "El nombre debe entrar como parámetro: def saludar(nombre)."
+          },
+          {
+            "type": "count",
+            "value": "saludar(",
+            "min": 3,
+            "message": "Necesitamos la definición y al menos dos llamadas con nombres distintos."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 2,
+            "message": "Imprime los dos resultados fuera de la función."
+          }
+        ],
+        "hints": [
+          "Dentro de la función, construye el texto con f\"Hola, {nombre}\".",
+          "return devuelve el valor; print lo muestra. No son lo mismo.",
+          "Llama así: print(saludar(\"Ana\"))."
+        ],
+        "solution": "def saludar(nombre):\n    return f\"Hola, {nombre}\"\n\nprint(saludar(\"Ana\"))\nprint(saludar(\"Luis\"))"
+      },
+      "success_criteria": [
+        "El saludo está definido una sola vez.",
+        "La función devuelve el texto y no imprime por dentro.",
+        "Dos llamadas con nombres distintos producen dos saludos distintos."
+      ],
+      "resource_ids": ["res_python_functions", "res_automate"]
+    }
+  ]
+}

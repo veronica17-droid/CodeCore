@@ -1,0 +1,371 @@
+{
+  "schema_version": 1,
+  "level_id": "advanced",
+  "lessons": [
+    {
+      "id": "adv_01_recursion",
+      "level_id": "advanced",
+      "order": 1,
+      "title": "Recursión: una función que se llama",
+      "concept": "Recursión y caso base",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Calcular 5! significa 5 × 4 × 3 × 2 × 1. Pero también significa 5 × 4!. Y 4! es 4 × 3!. Cada problema contiene una versión más pequeña de sí mismo. Si sigues bajando, llegas a un caso que ya sabes resolver: 0! = 1.",
+        "question": "¿Cómo escribes una función que resuelva el caso pequeño directamente y delegue el resto en sí misma?",
+        "constraints": [
+          "No puedes usar bucles for ni while.",
+          "Debe existir un caso base que detenga la recursión.",
+          "Cada llamada debe acercarse al caso base.",
+          "factorial(5) debe devolver 120."
+        ],
+        "reflection": "Toda recursión necesita dos cosas: una salida y un paso que reduzca el problema."
+      },
+      "guide": {
+        "mental_model": "Una función recursiva es una escalera: cada peldaño te acerca al suelo. El caso base es el suelo; sin él, la escalera no termina y el programa se queda sin pila de llamadas.",
+        "steps": [
+          {
+            "title": "1. Encuentra el caso que no necesita recursión",
+            "body": "factorial(0) y factorial(1) valen 1. Ese es el suelo. Debe comprobarse antes de cualquier llamada recursiva."
+          },
+          {
+            "title": "2. Reduce el problema en cada llamada",
+            "body": "factorial(n) llama a factorial(n - 1). El argumento disminuye, así que tarde o temprano llega a 0. Si no disminuyera, la recursión sería infinita."
+          },
+          {
+            "title": "3. Confía en la llamada pequeña",
+            "body": "No intentes simular toda la recursión mentalmente. Supón que factorial(n - 1) ya funciona y pregúntate cómo combinar ese resultado con n."
+          }
+        ],
+        "questions": [
+          "¿Qué pasa si eliminas el caso base?",
+          "¿Por qué factorial(-1) no terminaría con esta definición?",
+          "¿Cuántas llamadas se apilan para factorial(5)?"
+        ],
+        "common_mistakes": [
+          "Olvidar el caso base y provocar RecursionError.",
+          "Llamar a factorial(n) en lugar de factorial(n - 1).",
+          "Usar un bucle para «arreglar» la recursión en vez de entenderla."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Implementa factorial(n) de forma recursiva, con caso base para 0 y 1, y comprueba que factorial(5) devuelve 120. No uses bucles.",
+        "language": "python",
+        "starter_code": "def factorial(n):\n    # Caso base: factorial(0) y factorial(1) valen 1.\n    # Caso recursivo: n * factorial(n - 1).\n    ...\n\nprint(factorial(5))  # 120\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 1,
+            "message": "Falta definir factorial(n)."
+          },
+          {
+            "type": "ast",
+            "value": "if",
+            "min": 1,
+            "message": "Falta el caso base: sin una condición de salida, la recursión no termina."
+          },
+          {
+            "type": "ast",
+            "value": "return",
+            "min": 2,
+            "message": "Necesitas un return para el caso base y otro para el caso recursivo."
+          },
+          {
+            "type": "count",
+            "value": "factorial(",
+            "min": 2,
+            "message": "La función debe llamarse a sí misma con un argumento más pequeño."
+          },
+          {
+            "type": "ast",
+            "value": "for",
+            "max": 0,
+            "message": "El ejercicio pide recursión, no un bucle for."
+          },
+          {
+            "type": "ast",
+            "value": "while",
+            "max": 0,
+            "message": "El ejercicio pide recursión, no un bucle while."
+          }
+        ],
+        "hints": [
+          "Empieza con if n <= 1: return 1.",
+          "Después devuelve n * factorial(n - 1).",
+          "Comprueba a mano factorial(3): 3 * 2 * 1."
+        ],
+        "solution": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))  # 120"
+      },
+      "success_criteria": [
+        "Existe un caso base que detiene la recursión.",
+        "Cada llamada reduce n y se acerca a la salida.",
+        "Puedes explicar qué devuelve factorial(3) sin ejecutarlo."
+      ],
+      "resource_ids": ["res_think_python", "res_cs50"]
+    },
+    {
+      "id": "adv_02_complejidad",
+      "level_id": "advanced",
+      "order": 2,
+      "title": "Complejidad: el coste de una idea",
+      "concept": "Complejidad temporal y elección de estructura",
+      "minutes": 18,
+      "problem": {
+        "scenario": "Quieres detectar duplicados en una lista de n elementos. La solución A recorre la lista y, para cada elemento, vuelve a recorrerla completa. La solución B inserta cada elemento en un conjunto (set) y comprueba si ya estaba. Ambas dan la respuesta correcta, pero no cuestan lo mismo.",
+        "question": "¿Qué solución escala mejor cuando n pasa de 100 a 100.000, y por qué?",
+        "constraints": [
+          "Debes razonar sobre el número de operaciones, no sobre lo rápido que parece tu ordenador.",
+          "La comparación es en el peor caso.",
+          "Ten en cuenta que insertar en un set es O(1) en promedio.",
+          "Elige una opción y justifica el descarte de las demás."
+        ],
+        "reflection": "Que un programa funcione con 10 datos no significa que funcione con un millón."
+      },
+      "guide": {
+        "mental_model": "La complejidad no mide segundos: mide cómo crece el trabajo cuando crece la entrada. Un bucle dentro de otro multiplica el trabajo; una estructura con acceso directo evita ese producto.",
+        "steps": [
+          {
+            "title": "1. Cuenta los bucles anidados",
+            "body": "Si para cada uno de los n elementos recorres otros n, el trabajo crece como n × n. Eso es O(n²). Duplicar n cuadruplica el trabajo."
+          },
+          {
+            "title": "2. Reconoce el acceso promedio constante",
+            "body": "Un set responde «¿ya está?» sin recorrer todos los elementos. En promedio, cada inserción o consulta es O(1), así que n elementos cuestan O(n)."
+          },
+          {
+            "title": "3. Considera la memoria como parte del diseño",
+            "body": "La solución B es más rápida pero guarda una estructura adicional de hasta n elementos. Elegir bien es sopesar tiempo, memoria y claridad, no solo velocidad."
+          }
+        ],
+        "questions": [
+          "Si n se multiplica por 10, ¿cómo cambia el trabajo de A? ¿Y el de B?",
+          "¿Por qué O(n²) no significa exactamente n² operaciones?",
+          "¿En qué caso la solución B podría no ser la mejor elección?"
+        ],
+        "common_mistakes": [
+          "Confundir una operación individual con el coste total del algoritmo.",
+          "Creer que un set ordena los datos: no lo hace.",
+          "Ignorar el coste de memoria de la solución más rápida."
+        ]
+      },
+      "exercise": {
+        "type": "choice",
+        "prompt": "¿Cuál describe mejor el coste en el peor caso de cada solución?",
+        "options": [
+          {
+            "id": "a",
+            "text": "A es O(n²) y B es O(n).",
+            "correct": true,
+            "feedback": "Correcto. A recorre n elementos y, por cada uno, vuelve a recorrer n: n × n. B hace n inserciones/consultas de coste promedio O(1), así que crece de forma lineal."
+          },
+          {
+            "id": "b",
+            "text": "Ambas son O(n), porque las dos recorren la lista una vez.",
+            "correct": false,
+            "feedback": "Es la trampa más común. A recorre la lista una vez por cada elemento, no una sola vez: el recorrido interno está dentro del externo. Eso multiplica el trabajo."
+          },
+          {
+            "id": "c",
+            "text": "A es O(n) y B es O(n²).",
+            "correct": false,
+            "feedback": "Están invertidas. El bucle anidado de A es el que produce el crecimiento cuadrático; el set de B evita recorrer la lista en cada consulta."
+          },
+          {
+            "id": "d",
+            "text": "Ambas son O(1), porque cada operación individual es constante.",
+            "correct": false,
+            "feedback": "Una operación individual puede ser O(1), pero el algoritmo completo repite esa operación n veces. La complejidad describe el total, no una sola línea."
+          }
+        ],
+        "hints": [
+          "Cuenta cuántas veces se ejecuta el recorrido interno de A.",
+          "Si n se duplica, ¿cuántas comparaciones hace A? ¿Y B?",
+          "O(1) por operación no implica O(1) para todo el algoritmo."
+        ],
+        "solution": "La opción correcta es A: O(n²) para el doble recorrido y O(n) para el set."
+      },
+      "success_criteria": [
+        "Identificas el bucle anidado como fuente del coste cuadrático.",
+        "Distingues coste por operación de coste total.",
+        "Puedes justificar el intercambio entre tiempo y memoria."
+      ],
+      "resource_ids": ["res_bigocheatsheet", "res_visualgo"]
+    },
+    {
+      "id": "adv_03_errores",
+      "level_id": "advanced",
+      "order": 3,
+      "title": "Errores: fallar con elegancia",
+      "concept": "Excepciones y validación",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Un formulario recibe la edad como texto. Alguien escribe «veinticinco» o deja el campo vacío. Si el programa hace int(texto) sin protección, se cierra con un ValueError y pierde todo lo que el usuario había escrito.",
+        "question": "¿Cómo conviertes el texto en número y devuelves un resultado controlado cuando no es válido?",
+        "constraints": [
+          "La función debe devolver un entero cuando el texto es válido.",
+          "Debe devolver None cuando el texto no representa un número.",
+          "Debes capturar ValueError, no cualquier excepción.",
+          "No puedes usar un except desnudo."
+        ],
+        "reflection": "Un error esperable no es una catástrofe: es un caso más del contrato."
+      },
+      "guide": {
+        "mental_model": "Una excepción es una interrupción del flujo normal. Capturarla es decidir qué hacer cuando algo esperado falla. Capturar demasiado oculta errores que no sabías que existían.",
+        "steps": [
+          {
+            "title": "1. Delimita la operación que puede fallar",
+            "body": "Solo int(texto) puede lanzar ValueError. El try debe envolver esa conversión, no todo el programa."
+          },
+          {
+            "title": "2. Captura el error específico",
+            "body": "except ValueError: comunica que sabes qué puede fallar. except: también atraparía errores de programación y los volvería invisibles."
+          },
+          {
+            "title": "3. Define el valor de fallo en el contrato",
+            "body": "None significa «no hay número válido». Quien llama debe comprobarlo. La función no imprime ni decide por el usuario."
+          }
+        ],
+        "questions": [
+          "¿Qué excepción concreta lanza int(\"abc\")?",
+          "¿Por qué except: es peligroso en este caso?",
+          "¿Qué diferencia hay entre devolver None y dejar que el programa se cierre?"
+        ],
+        "common_mistakes": [
+          "Usar un except desnudo que oculta errores inesperados.",
+          "Devolver 0 como si fuera una edad válida.",
+          "Imprimir el error dentro de la función en lugar de devolver un valor comprobable."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Completa edad_segura(texto): devuelve el entero si el texto es un número; devuelve None si no lo es. Captura solo ValueError y comprueba los dos casos.",
+        "language": "python",
+        "starter_code": "def edad_segura(texto):\n    # Devuelve un entero o None si el texto no es válido.\n    ...\n\nprint(edad_segura(\"25\"))\nprint(edad_segura(\"veinticinco\"))\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "try",
+            "min": 1,
+            "message": "Falta el bloque try alrededor de la conversión que puede fallar."
+          },
+          {
+            "type": "contains",
+            "value": "except",
+            "message": "Falta la captura del error: sin except, el ValueError cierra el programa."
+          },
+          {
+            "type": "contains",
+            "value": "ValueError",
+            "message": "Captura ValueError, que es la excepción concreta de int() con texto inválido."
+          },
+          {
+            "type": "not_contains",
+            "value": "except:",
+            "message": "Un except desnudo atrapa cualquier error, incluidos los de programación. Sé específico."
+          },
+          {
+            "type": "ast",
+            "value": "return",
+            "min": 2,
+            "message": "Necesitas un return para el caso válido y otro para el inválido."
+          },
+          {
+            "type": "contains",
+            "value": "None",
+            "message": "El contrato dice que un texto inválido devuelve None."
+          }
+        ],
+        "hints": [
+          "Dentro del try: return int(texto).",
+          "Después del except ValueError: return None.",
+          "No imprimas dentro: devuelve y comprueba fuera."
+        ],
+        "solution": "def edad_segura(texto):\n    try:\n        return int(texto)\n    except ValueError:\n        return None\n\nprint(edad_segura(\"25\"))\nprint(edad_segura(\"veinticinco\"))"
+      },
+      "success_criteria": [
+        "Un texto válido devuelve el entero correspondiente.",
+        "Un texto inválido devuelve None sin cerrar el programa.",
+        "Solo se captura ValueError.",
+        "Puedes explicar por qué un except desnudo es una mala idea."
+      ],
+      "resource_ids": ["res_python_errors", "res_python_pep8"]
+    },
+    {
+      "id": "adv_04_diseno",
+      "level_id": "advanced",
+      "order": 4,
+      "title": "Diseño: funciones que no sorprenden",
+      "concept": "Efectos secundarios y diseño de contratos",
+      "minutes": 18,
+      "problem": {
+        "scenario": "Una función add_task(tasks, title) añade una tarea a la lista que recibe. Si modifica la lista original, quien la llamó descubre que sus datos cambiaron sin pedirlo. Ese efecto secundario oculto provoca errores difíciles de rastrear, sobre todo cuando varias partes del programa comparten la misma lista.",
+        "question": "¿Qué consecuencias tiene modificar la lista original y cómo lo evitarías?",
+        "constraints": [
+          "Debes razonar sobre efectos secundarios, no solo sobre el resultado visible.",
+          "Menciona al menos dos consecuencias concretas.",
+          "Explica qué haría una versión que devuelve una lista nueva.",
+          "No escribas código: el objetivo es justificar una decisión de diseño."
+        ],
+        "reflection": "El código más fácil de mantener es el que no cambia cosas a escondidas."
+      },
+      "guide": {
+        "mental_model": "Una función con efectos secundarios cambia algo fuera de su resultado. Una función pura devuelve un valor nuevo y deja intacto lo que recibe. La segunda es más fácil de probar, componer y razonar.",
+        "steps": [
+          {
+            "title": "1. Separa entrada, salida y efecto",
+            "body": "Pregunta qué recibe la función, qué devuelve y qué modifica además. Si la respuesta a lo tercero no es «nada», hay un efecto secundario que documentar."
+          },
+          {
+            "title": "2. Piensa en los aliasing",
+            "body": "Si dos variables apuntan a la misma lista, modificar una afecta a la otra. Ese acoplamiento invisible es la causa de muchos errores intermitentes."
+          },
+          {
+            "title": "3. Elige el contrato explícito",
+            "body": "Devolver una lista nueva hace visible el cambio: quien llama decide si reemplaza la original. Cuesta un poco de memoria, pero gana previsibilidad."
+          }
+        ],
+        "questions": [
+          "¿Qué partes del programa podrían verse afectadas si la lista se comparte?",
+          "¿Cómo probarías una función que modifica su argumento frente a una que no?",
+          "¿En qué casos sí tendría sentido mutar la lista a propósito?"
+        ],
+        "common_mistakes": [
+          "Confundir «funciona en mi prueba» con «no tiene efectos secundarios».",
+          "Copiar la lista solo a veces, según el camino que tome la función.",
+          "Documentar el efecto secundario pero no justificarlo."
+        ]
+      },
+      "exercise": {
+        "type": "short",
+        "prompt": "Explica con tus palabras por qué conviene que add_task no modifique la lista original. Menciona al menos dos consecuencias concretas y qué alternativa propones. Escribe al menos 25 palabras.",
+        "keywords": [
+          "original",
+          "copia",
+          "efecto",
+          "lateral",
+          "predecible",
+          "depurar",
+          "compartir",
+          "sorpresa",
+          "prueba"
+        ],
+        "min_words": 25,
+        "min_keywords": 3,
+        "hints": [
+          "Piensa en dos variables que apuntan a la misma lista.",
+          "¿Qué pasa si otra parte del programa esperaba los datos intactos?",
+          "La alternativa es devolver una lista nueva, por ejemplo tasks + [title].",
+          "Relaciona el efecto secundario con la facilidad de probar la función."
+        ],
+        "solution": "Modificar la lista original crea un efecto lateral: quien llamó a la función no esperaba que sus datos cambiaran, y si otra parte del programa comparte esa lista, el cambio aparece a distancia. Eso hace el comportamiento menos predecible y más difícil de depurar. Devolver una lista nueva (por ejemplo, tasks + [title]) deja claro que el resultado es otro dato y permite probar la función sin preparar ni restaurar estado compartido."
+      },
+      "success_criteria": [
+        "Explicas el efecto secundario con un ejemplo concreto.",
+        "Mencionas al menos dos consecuencias (datos compartidos, depuración, pruebas, sorpresa).",
+        "Propones devolver una lista nueva y justificas el intercambio."
+      ],
+      "resource_ids": ["res_python_pep8", "res_opensource_guide"]
+    }
+  ]
+}

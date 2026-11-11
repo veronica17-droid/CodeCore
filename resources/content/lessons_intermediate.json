@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "level_id": "intermediate",
+  "lessons": [
+    {
+      "id": "int_01_listas",
+      "level_id": "intermediate",
+      "order": 1,
+      "title": "Listas: muchos datos, una sola idea",
+      "concept": "Listas, recorrido y casos límite",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Un profesor tiene las notas de un examen en una lista. Mañana pueden ser 4 notas, pasado mañana 40. Quiere el promedio sin escribir una suma distinta cada vez y sin que el programa se rompa si nadie entregó el examen.",
+        "question": "¿Cómo calculas el promedio de cualquier lista de notas, incluida la lista vacía, con un solo algoritmo?",
+        "constraints": [
+          "No puedes usar sum(): el objetivo es razonar el recorrido.",
+          "El código debe funcionar con 0, 1 o muchas notas.",
+          "Si la lista está vacía, debe imprimir «Sin notas» en lugar de dividir entre cero.",
+          "El promedio debe calcularse con los datos, no escribirse a mano."
+        ],
+        "reflection": "El caso vacío no es un detalle molesto: es parte de la definición del problema."
+      },
+      "guide": {
+        "mental_model": "Una lista es una secuencia ordenada de valores. Recorrerla con un for te da cada elemento, uno por uno, sin que necesites saber cuántos hay.",
+        "steps": [
+          {
+            "title": "1. Piensa en acumuladores",
+            "body": "Para sumar necesitas una variable que empiece en 0 y crezca con cada elemento. Ese patrón se llama acumulador y aparece en promedios, conteos y búsquedas."
+          },
+          {
+            "title": "2. Separa suma de división",
+            "body": "Primero acumula el total y cuenta los elementos; después divide. Mezclar ambas operaciones en el bucle hace más difícil razonar sobre el resultado."
+          },
+          {
+            "title": "3. Protege el caso vacío antes de dividir",
+            "body": "Dividir entre len(notas) cuando la lista está vacía produce un ZeroDivisionError. La guarda debe ocurrir antes, no después de intentar el cálculo."
+          }
+        ],
+        "questions": [
+          "¿Cuánto vale el acumulador antes de entrar al bucle y por qué?",
+          "¿Qué ocurre si la lista tiene un solo elemento?",
+          "¿Por qué comprobar len(notas) == 0 es más claro que intentar capturar la excepción?"
+        ],
+        "common_mistakes": [
+          "Inicializar el total en 1 en lugar de 0.",
+          "Dividir entre un número escrito a mano en vez de len(notas).",
+          "Olvidar el caso vacío y provocar una división entre cero."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Completa el programa: si notas está vacía, imprime «Sin notas». Si no, recorre la lista con un bucle, calcula el promedio sin usar sum() y muéstralo.",
+        "language": "python",
+        "starter_code": "notas = [7, 8, 6, 10]\n\n# 1. Comprueba el caso vacío.\n# 2. Recorre la lista y acumula el total.\n# 3. Divide entre el número de notas e imprime.\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "for",
+            "min": 1,
+            "message": "Falta el recorrido: necesitas un bucle que pase por cada nota."
+          },
+          {
+            "type": "not_contains",
+            "value": "sum(",
+            "message": "El ejercicio pide razonar el acumulador; sum() resuelve el problema sin mostrar el recorrido."
+          },
+          {
+            "type": "ast",
+            "value": "if",
+            "min": 1,
+            "message": "Falta la guarda para la lista vacía: sin ella, dividir entre cero rompe el programa."
+          },
+          {
+            "type": "contains",
+            "value": "len(",
+            "message": "Usa len(notas) para saber cuántos elementos hay; no escribas el número a mano."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Falta mostrar el resultado."
+          }
+        ],
+        "hints": [
+          "Antes del bucle: total = 0.",
+          "Dentro del bucle: total += nota.",
+          "Después del bucle: total / len(notas), pero solo si la lista no está vacía."
+        ],
+        "solution": "notas = [7, 8, 6, 10]\n\nif len(notas) == 0:\n    print(\"Sin notas\")\nelse:\n    total = 0\n    for nota in notas:\n        total += nota\n    print(total / len(notas))"
+      },
+      "success_criteria": [
+        "El cálculo funciona con cualquier número de notas.",
+        "La lista vacía se trata antes de dividir.",
+        "Puedes explicar el valor del acumulador en cada vuelta."
+      ],
+      "resource_ids": ["res_python_lists", "res_realpython"]
+    },
+    {
+      "id": "int_02_diccionarios",
+      "level_id": "intermediate",
+      "order": 2,
+      "title": "Diccionarios: buscar por significado",
+      "concept": "Diccionarios y acceso seguro",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Una agenda guarda teléfonos por nombre. Con una lista tendrías que recordar en qué posición está cada persona; con un diccionario preguntas directamente por el nombre. Pero si buscas a alguien que no existe, el programa no puede explotar.",
+        "question": "¿Cómo buscas un teléfono por nombre y devuelves un resultado útil cuando el nombre no está?",
+        "constraints": [
+          "Los contactos deben vivir en un diccionario.",
+          "La búsqueda debe ser una función que reciba el nombre.",
+          "Si el nombre no existe, debe devolver «No encontrado», no lanzar un error.",
+          "Debes usar .get() en lugar de capturar la excepción."
+        ],
+        "reflection": "La estructura de datos correcta convierte una búsqueda complicada en una pregunta directa."
+      },
+      "guide": {
+        "mental_model": "Un diccionario asocia claves con valores. No te importa el orden: te importa la relación «nombre → teléfono». Acceder por clave es como consultar un índice, no como recorrer una lista.",
+        "steps": [
+          {
+            "title": "1. Elige la clave por lo que preguntas",
+            "body": "Si la pregunta es «¿cuál es el teléfono de Ana?», el nombre es la clave y el teléfono el valor. Si eliges la clave al revés, cada búsqueda necesitará un recorrido."
+          },
+          {
+            "title": "2. Distingue ausencia de valor vacío",
+            "body": "Un contacto puede no existir. Eso no es lo mismo que un teléfono vacío. El valor por defecto de .get() te permite representar la ausencia sin excepciones."
+          },
+          {
+            "title": "3. Devuelve, no imprimas dentro",
+            "body": "Una función de búsqueda debe devolver el resultado para que quien la llame decida qué hacer con él: mostrarlo, guardarlo o encadenarlo."
+          }
+        ],
+        "questions": [
+          "¿Por qué contactos[nombre] falla si el nombre no existe y .get(nombre) no?",
+          "¿Qué valor por defecto tiene sentido para una agenda?",
+          "¿Qué cambiarías si quisieras buscar por teléfono en lugar de por nombre?"
+        ],
+        "common_mistakes": [
+          "Usar contactos[nombre] sin comprobar si la clave existe.",
+          "Recorrer todo el diccionario para buscar una clave: es innecesario.",
+          "Imprimir dentro de la función y devolver None sin darse cuenta."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Completa buscar(nombre) para que devuelva el teléfono del contacto o «No encontrado» si no existe. Usa .get() y llama a la función con «Ana» y con «Marta».",
+        "language": "python",
+        "starter_code": "contactos = {\"Ana\": \"555-1234\", \"Luis\": \"555-9876\"}\n\ndef buscar(nombre):\n    # Devuelve el teléfono o \"No encontrado\".\n    ...\n\nprint(buscar(\"Ana\"))\nprint(buscar(\"Marta\"))\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 1,
+            "message": "Falta definir la función buscar(nombre)."
+          },
+          {
+            "type": "contains",
+            "value": ".get(",
+            "message": "Usa contactos.get(nombre, ...) para evitar el error cuando la clave no existe."
+          },
+          {
+            "type": "ast",
+            "value": "return",
+            "min": 1,
+            "message": "La función debe devolver el resultado, no solo imprimirlo."
+          },
+          {
+            "type": "count",
+            "value": "buscar(",
+            "min": 3,
+            "message": "Necesitamos la definición y dos llamadas: una para un contacto existente y otra para uno que no está."
+          },
+          {
+            "type": "contains",
+            "value": "contactos",
+            "message": "La búsqueda debe consultar el diccionario contactos."
+          }
+        ],
+        "hints": [
+          "El segundo argumento de .get() es el valor por defecto.",
+          "return contactos.get(nombre, \"No encontrado\").",
+          "No hace falta un if: .get() ya cubre la ausencia."
+        ],
+        "solution": "contactos = {\"Ana\": \"555-1234\", \"Luis\": \"555-9876\"}\n\ndef buscar(nombre):\n    return contactos.get(nombre, \"No encontrado\")\n\nprint(buscar(\"Ana\"))\nprint(buscar(\"Marta\"))"
+      },
+      "success_criteria": [
+        "Buscar un nombre inexistente devuelve el texto por defecto sin errores.",
+        "La función devuelve el valor en lugar de imprimirlo por dentro.",
+        "Puedes explicar por qué la clave es el nombre y no el teléfono."
+      ],
+      "resource_ids": ["res_python_dict", "res_automate"]
+    },
+    {
+      "id": "int_03_descomponer",
+      "level_id": "intermediate",
+      "order": 3,
+      "title": "Descomponer: divide y vencerás",
+      "concept": "Funciones con una responsabilidad",
+      "minutes": 22,
+      "problem": {
+        "scenario": "La nota final de una materia se compone de examen (30 %), proyecto (30 %) y prácticas (40 %). Además hay que decidir si el estudiante aprueba. Si escribes todo en un solo bloque, cambiar el peso de las prácticas obliga a tocar varias partes y es fácil equivocarse.",
+        "question": "¿Cómo separas el cálculo de la decisión en piezas que puedas entender y cambiar por separado?",
+        "constraints": [
+          "Una función debe calcular la nota final ponderada.",
+          "Otra función debe decidir el estado a partir de la nota.",
+          "La decisión debe ser «aprobado» si la nota es 5 o más; «reprobado» si no.",
+          "Los pesos deben aparecer una sola vez y ser fáciles de cambiar."
+        ],
+        "reflection": "Descomponer no es escribir más código: es escribir código que se pueda leer por partes."
+      },
+      "guide": {
+        "mental_model": "Cada función debe responder una sola pregunta. promedio responde «¿cuánto sacó?»; estado responde «¿aprobó?». Si una función responde dos preguntas, probablemente son dos funciones.",
+        "steps": [
+          {
+            "title": "1. Nombra las preguntas del problema",
+            "body": "El enunciado esconde dos preguntas: cuál es la nota y si esa nota alcanza. Cada pregunta será una función distinta."
+          },
+          {
+            "title": "2. Define los contratos",
+            "body": "promedio recibe tres números y devuelve uno. estado recibe un número y devuelve un texto. Los contratos te dicen qué probar sin mirar el cuerpo."
+          },
+          {
+            "title": "3. Compón al final",
+            "body": "La parte principal del programa solo llama a las funciones y muestra el resultado. Si el flujo principal es corto, la descomposición funcionó."
+          }
+        ],
+        "questions": [
+          "¿Qué función cambiarías si el proyecto pasa a valer 40 %?",
+          "¿Qué devuelve estado(5)? ¿Y estado(4.9)?",
+          "¿Podrías probar promedio sin imprimir nada? ¿Por qué es valioso?"
+        ],
+        "common_mistakes": [
+          "Calcular la nota y decidir el estado dentro de la misma función.",
+          "Repetir los pesos en varias líneas.",
+          "Comparar con > 5 en lugar de >= 5 y reprobar a quien saca exactamente 5."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Completa las dos funciones: promedio(examen, proyecto, practicas) con pesos 30/30/40, y estado(nota_final) que devuelva «aprobado» o «reprobado». Después calcula e imprime el estado.",
+        "language": "python",
+        "starter_code": "def promedio(examen, proyecto, practicas):\n    # 30 % examen, 30 % proyecto, 40 % practicas\n    ...\n\ndef estado(nota_final):\n    # \"aprobado\" si la nota es 5 o más\n    ...\n\nnota = promedio(8, 7, 9)\nprint(estado(nota))\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 2,
+            "message": "Faltan las dos funciones: una para calcular y otra para decidir."
+          },
+          {
+            "type": "ast",
+            "value": "return",
+            "min": 2,
+            "message": "Cada función debe devolver su resultado para poder componerlas."
+          },
+          {
+            "type": "regex",
+            "value": "0\\.3|30",
+            "message": "El cálculo debe incluir el peso 30 % del examen o del proyecto."
+          },
+          {
+            "type": "regex",
+            "value": "0\\.4|40",
+            "message": "El cálculo debe incluir el peso 40 % de las prácticas."
+          },
+          {
+            "type": "ast",
+            "value": "if",
+            "min": 1,
+            "message": "La decisión necesita una condición sobre la nota final."
+          },
+          {
+            "type": "count",
+            "value": "promedio(",
+            "min": 2,
+            "message": "Define promedio y úsala para calcular la nota."
+          },
+          {
+            "type": "count",
+            "value": "estado(",
+            "min": 2,
+            "message": "Define estado y úsala para mostrar el resultado."
+          }
+        ],
+        "hints": [
+          "promedio devuelve examen * 0.3 + proyecto * 0.3 + practicas * 0.4.",
+          "estado usa if nota_final >= 5.",
+          "No imprimas dentro de las funciones: devuelve y compón fuera."
+        ],
+        "solution": "def promedio(examen, proyecto, practicas):\n    return examen * 0.3 + proyecto * 0.3 + practicas * 0.4\n\ndef estado(nota_final):\n    if nota_final >= 5:\n        return \"aprobado\"\n    return \"reprobado\"\n\nnota = promedio(8, 7, 9)\nprint(estado(nota))"
+      },
+      "success_criteria": [
+        "Cada función responde una sola pregunta.",
+        "Cambiar un peso requiere editar un solo lugar.",
+        "La nota 5 exacta se considera aprobada.",
+        "El flujo principal se lee como una frase."
+      ],
+      "resource_ids": ["res_python_functions", "res_think_python"]
+    },
+    {
+      "id": "int_04_depurar",
+      "level_id": "intermediate",
+      "order": 4,
+      "title": "Depurar: el error no está donde parece",
+      "concept": "Depuración y off-by-one",
+      "minutes": 18,
+      "problem": {
+        "scenario": "Un compañero escribió un programa que suma los números del 1 al 10. Al ejecutarlo obtiene 45, pero la respuesta correcta es 55. El bucle parece correcto y no hay ningún mensaje de error. El fallo está en un límite.",
+        "question": "¿Por qué el programa se queda corto y cómo lo demuestras sin cambiar el código a ciegas?",
+        "constraints": [
+          "Debes corregir el programa, no reescribirlo desde cero.",
+          "La suma debe incluir el 10.",
+          "Debes poder explicar por qué range(1, 10) no incluye el 10.",
+          "No puedes sustituir el bucle por 55 escrito a mano."
+        ],
+        "reflection": "Cuando no hay excepción, el error es una suposición equivocada. Tu trabajo es encontrar cuál."
+      },
+      "guide": {
+        "mental_model": "Depurar es comparar lo que crees que hace el programa con lo que realmente hace. Los límites de range son un lugar clásico donde esa diferencia aparece.",
+        "steps": [
+          {
+            "title": "1. Reproduce el fallo con datos pequeños",
+            "body": "Cambia el 10 por 3 y cuenta a mano: range(1, 3) produce 1 y 2. La suma da 3, no 6. El patrón se ve mejor en pequeño."
+          },
+          {
+            "title": "2. Formula una hipótesis",
+            "body": "«El límite superior no se incluye». Si es cierta, range(1, 11) debería producir 1..10. Compruébalo contando los valores, no ejecutando a ciegas."
+          },
+          {
+            "title": "3. Corrige el límite, no el síntoma",
+            "body": "Sumar 10 al final también daría 55, pero no arregla el bucle. La corrección debe dejar el algoritmo correcto para cualquier n."
+          }
+        ],
+        "questions": [
+          "¿Cuántos valores produce range(1, 10)?",
+          "¿Qué diferencia hay entre un error de sintaxis y un error lógico?",
+          "¿Cómo probarías que la corrección funciona para 1..100?"
+        ],
+        "common_mistakes": [
+          "Cambiar el print para que muestre 55 sin arreglar la suma.",
+          "Usar range(1, 11) sin entender por qué funciona.",
+          "Suponer que el error está en total += numero cuando el bucle nunca llega al 10."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Corrige el programa para que sume del 1 al 10 inclusive e imprima 55. Mantén el bucle y el acumulador.",
+        "language": "python",
+        "starter_code": "total = 0\nfor numero in range(1, 10):\n    total += numero\nprint(total)  # debería ser 55\n",
+        "checks": [
+          {
+            "type": "regex",
+            "value": "range\\(\\s*1\\s*,\\s*11\\s*\\)|range\\(\\s*11\\s*\\)",
+            "message": "El límite superior de range no se incluye. Para llegar al 10 necesitas 11 como límite (o range(11))."
+          },
+          {
+            "type": "not_contains",
+            "value": "range(1, 10)",
+            "message": "Todavía queda el límite antiguo: el bucle sigue parando en 9."
+          },
+          {
+            "type": "ast",
+            "value": "for",
+            "min": 1,
+            "message": "Mantén el bucle: la corrección es de límites, no de estructura."
+          },
+          {
+            "type": "contains",
+            "value": "print(",
+            "message": "Falta mostrar el resultado."
+          }
+        ],
+        "hints": [
+          "Cuenta los valores que produce range(1, 10): 1, 2, ..., 9.",
+          "El segundo argumento es un límite exclusivo.",
+          "Cambia solo el 10 por 11 y vuelve a contar."
+        ],
+        "solution": "total = 0\nfor numero in range(1, 11):\n    total += numero\nprint(total)  # 55"
+      },
+      "success_criteria": [
+        "La suma incluye el 10 y da 55.",
+        "Puedes explicar con un ejemplo pequeño por qué el límite era el error.",
+        "La corrección sirve para cualquier rango, no solo para este caso."
+      ],
+      "resource_ids": ["res_python_control", "res_cs50"]
+    }
+  ]
+}

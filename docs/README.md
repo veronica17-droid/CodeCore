@@ -9,8 +9,8 @@ Cada fase del proyecto tiene un documento con tres secciones obligatorias:
 | Fase | Documento | Estado |
 |------|-----------|--------|
 | 0 | [Arquitectura y estructura](00-arquitectura.md) | ✅ Completada |
-| 1 | [Diseño y modelo de datos](01-diseno.md) | ⏳ Pendiente |
-| 2 | [Núcleo](02-nucleo.md) | ⏳ Pendiente |
+| 1 | [Diseño y modelo de datos](01-diseno.md) | ✅ Completada |
+| 2 | [Núcleo](02-nucleo.md) | ✅ Completada |
 | 3 | [Interfaz](03-interfaz.md) | ⏳ Pendiente |
 | 4 | [Biblioteca de recursos](04-recursos.md) | ⏳ Pendiente |
 | 5 | [Empaquetado](05-empaquetado.md) | ⏳ Pendiente |
