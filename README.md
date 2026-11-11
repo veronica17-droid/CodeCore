@@ -4,7 +4,8 @@ Aplicación de escritorio para **aprender a programar pensando**, no memorizando
 Se entrega como un único `.exe` para Windows: doble clic, sin instalar Python, sin
 terminal y sin configurar variables de entorno.
 
-> Estado: en desarrollo por fases. Consulta [`docs/`](docs/) para el detalle de cada fase.
+> Estado: fases 0–6 completadas. El `.exe` aún no se ha generado; el proceso exacto
+> está en [`docs/05-empaquetado.md`](docs/05-empaquetado.md).
 
 ## Qué hace
 
@@ -39,8 +40,18 @@ python src\main.py
 
 ## Ejecutar las pruebas
 
+Todas las comprobaciones (compilación, contenido, 51 pruebas y smoke test de la
+interfaz):
+
 ```powershell
-python -m unittest discover -s tests -v
+.\tools\check_all.ps1
+```
+
+Solo las pruebas de unidad:
+
+```powershell
+$py = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
+& $py -X utf8 -m unittest discover -s tests -v
 ```
 
 ## Generar el `.exe`

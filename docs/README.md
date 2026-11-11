@@ -15,7 +15,7 @@ Cada fase del proyecto tiene un documento con tres secciones obligatorias:
 | 4 | [Biblioteca de recursos](04-recursos.md) | ✅ Completada |
 | 5 | [Empaquetado](05-empaquetado.md) | 🟡 Preparado (sin `.exe`) |
 | 5 | [Pruebas](06-pruebas.md) | ✅ Completada |
-| 6 | [Git](07-git.md) | ⏳ Pendiente |
+| 6 | [Git](07-git.md) | ✅ Completada |
 
 ## Convenciones
 
