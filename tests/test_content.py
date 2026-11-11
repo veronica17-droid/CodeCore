@@ -35,6 +35,23 @@ class ContentRepositoryTest(unittest.TestCase):
             self.assertTrue(lesson.success_criteria)
             self.assertTrue(lesson.exercise.prompt)
 
+    def test_every_solution_passes_its_own_checks(self) -> None:
+        from core.feedback import evaluate
+
+        for lesson in self.repo.all_lessons():
+            exercise = lesson.exercise
+            if exercise.type == "choice":
+                answer = next(option.id for option in exercise.options if option.correct)
+            else:
+                answer = exercise.solution
+            result = evaluate(exercise, answer, attempt=3, level_id=lesson.level_id)
+            self.assertTrue(
+                result.passed,
+                f"{lesson.id}: la solución de ejemplo no pasa sus checks "
+                f"({result.score}%): "
+                + "; ".join(o.message for o in result.outcomes if not o.ok),
+            )
+
     def test_navigation(self) -> None:
         first = self.repo.lessons_for_level("beginner")[0]
         second = self.repo.next_lesson(first.id)

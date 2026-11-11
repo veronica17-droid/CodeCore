@@ -62,7 +62,7 @@
           },
           {
             "type": "regex",
-            "value": "cort\\w*[\\s\\S]*unt\\w*[\\s\\S]*cierr\\w*",
+            "value": "cort\\w*[\\s\\S]*unt\\w*[\\s\\S]*cerr\\w*",
             "flags": "i",
             "message": "El orden no respeta las dependencias: primero se corta, después se unta y al final se cierra."
           },
