@@ -51,7 +51,7 @@ def smoke_ui() -> int:
     repo = ContentRepository()
     with tempfile.TemporaryDirectory() as tmp:
         store = ProgressStore(Path(tmp) / "progress.json")
-        app = CodeCoreApp(repository=repo, store=store)
+        app = CodeCoreApp(repository=repo, store=store, skip_auth=True)
         app.withdraw()
         errors: list[str] = []
 

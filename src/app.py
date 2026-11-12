@@ -14,11 +14,13 @@ from config import (
     WINDOW_TITLE,
     WINDOW_WIDTH,
 )
+from core.auth import AuthStore
 from core.content import ContentRepository
-from core.paths import resource_path
+from core.paths import resource_path, user_progress_file
 from core.progress import ProgressStore
 from ui import theme, widgets
 from ui.about_view import AboutView
+from ui.auth_view import AuthView
 from ui.library_view import LibraryView
 from ui.lesson_view import LessonView
 from ui.path_view import PathView
@@ -88,11 +90,14 @@ class CodeCoreApp(tk.Tk):
         self,
         repository: ContentRepository | None = None,
         store: ProgressStore | None = None,
+        skip_auth: bool = False,
     ) -> None:
         super().__init__()
         self.repo = repository or ContentRepository()
-        self.store = store or ProgressStore()
-        self.progress = self.store.load()
+        self.store = store
+        self.skip_auth = skip_auth
+        self.progress = None
+        self.current_username = None
         self.current_view: tk.Frame | None = None
         self.nav_items: dict[str, NavItem] = {}
         self._save_error_shown = False
@@ -106,8 +111,51 @@ class CodeCoreApp(tk.Tk):
 
         self._build_shell()
         self.refresh_shell()
-        self.open_welcome()
+
+        if skip_auth:
+            self._start_skip_auth_session()
+        else:
+            self._start_auth_flow()
+
         self.protocol("WM_DELETE_WINDOW", self._on_close)
+
+    # ------------------------------------------------------------------
+    # Autenticación
+    # ------------------------------------------------------------------
+
+    def _start_auth_flow(self) -> None:
+        """Muestra la pantalla de login/registro antes de la app."""
+        self.navigate(AuthView, on_auth_success=self._on_auth_success)
+
+    def _on_auth_success(self, username: str) -> None:
+        """Tras login/registro exitoso: carga progreso del usuario y abre Inicio."""
+        self.auth_store = AuthStore()
+        self.store = ProgressStore(path=user_progress_file(username))
+        self.current_username = username
+        self.progress = self.store.load()
+        self.navigate(WelcomeView)
+        self._set_active("welcome")
+        self.refresh_shell()
+
+    def _start_skip_auth_session(self) -> None:
+        """Modo sin auth (tests / smoke test): crea progreso temporal."""
+        from core.paths import progress_file
+
+        self.store = ProgressStore(path=progress_file())
+        self.progress = self.store.load()
+        self.current_username = "usuario"
+        self.navigate(WelcomeView)
+        self._set_active("welcome")
+        self.refresh_shell()
+
+    def logout(self) -> None:
+        """Cierra la sesión y vuelve a la pantalla de auth."""
+        if hasattr(self, "auth_store"):
+            self.auth_store.logout()
+        self.progress = None
+        self.store = None
+        self.current_username = None
+        self._start_auth_flow()
 
     # ------------------------------------------------------------------
     # Construcción
@@ -153,6 +201,9 @@ class CodeCoreApp(tk.Tk):
             self.nav_items[key] = item
             self.bind(f"<Control-Key-{index + 1}>", lambda _event, key=key: self._open_nav(key))
 
+        # Separador antes del footer
+        tk.Frame(sidebar, bg="#1E293B", height=1).pack(fill="x", padx=18, pady=(22, 0))
+
         footer = tk.Frame(sidebar, bg=theme.SIDEBAR)
         footer.pack(side="bottom", fill="x", padx=20, pady=(0, 22))
         tk.Frame(footer, bg="#1E293B", height=1).pack(fill="x", pady=(0, 14))
@@ -180,6 +231,22 @@ class CodeCoreApp(tk.Tk):
             footer, "Sin nivel elegido", size=9, color="#93C5FD", bg=theme.SIDEBAR
         )
         self.level_detail.pack(anchor="w", pady=(6, 0))
+
+        # Usuario actual y cerrar sesión
+        self.user_label = widgets.mk_label(
+            footer, "Sin sesión", size=8, color="#94A3B8", bg=theme.SIDEBAR
+        )
+        self.user_label.pack(anchor="w", pady=(16, 2))
+        widgets.mk_button(
+            footer,
+            "Cerrar sesión",
+            self.logout,
+            kind="ghost",
+            size=9,
+            padx=10,
+            pady=6,
+            width=16,
+        ).pack(anchor="e")
 
         self.content = tk.Frame(self, bg=theme.BG)
         self.content.pack(side="left", fill="both", expand=True)
@@ -216,6 +283,9 @@ class CodeCoreApp(tk.Tk):
         self._set_active("welcome")
 
     def open_path(self, level_id: str | None = None) -> None:
+        if self.progress is None:
+            self.open_welcome()
+            return
         target = level_id or self.progress.level
         if target is None:
             self.open_welcome()
@@ -259,6 +329,8 @@ class CodeCoreApp(tk.Tk):
     # ------------------------------------------------------------------
 
     def summary(self) -> dict:
+        if self.progress is None:
+            return {"overall": {"completed": 0, "total": 0, "percent": 0}, "levels": []}
         return self.store.summary(self.progress, self.repo.levels)
 
     def refresh_shell(self) -> None:
@@ -269,10 +341,20 @@ class CodeCoreApp(tk.Tk):
         self.overall_detail.configure(
             text=f"{overall['completed']} de {overall['total']} lecciones"
         )
-        level = self.repo.get_level(self.progress.level or "")
-        self.level_detail.configure(text=level.name if level else "Sin nivel elegido")
+        if self.progress and self.progress.level:
+            level = self.repo.get_level(self.progress.level)
+            self.level_detail.configure(text=level.name if level else "Sin nivel elegido")
+        else:
+            self.level_detail.configure(text="Sin nivel elegido")
+
+        if self.progress is not None:
+            self.user_label.configure(text=self.current_username or "Usuario")
+        else:
+            self.user_label.configure(text="Sin sesión")
 
     def save_progress(self) -> None:
+        if self.store is None or self.progress is None:
+            return
         try:
             self.store.save(self.progress)
             self._save_error_shown = False

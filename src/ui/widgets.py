@@ -187,6 +187,47 @@ def progress_bar(parent: tk.Misc, *, style: str = "Accent.Horizontal.TProgressba
     return ttk.Progressbar(parent, style=style, maximum=100, mode="determinate")
 
 
+def mk_entry_styled(
+    parent: tk.Misc,
+    *,
+    placeholder: str = "",
+    show: str = "",
+) -> tk.Entry:
+    """Entry con texto de placeholder y estilo consistente con la app."""
+    entry = tk.Entry(
+        parent,
+        font=theme.font(11),
+        bg=theme.SURFACE,
+        fg=theme.MUTED,
+        insertcolor=theme.TEXT,
+        relief="flat",
+        bd=0,
+        highlightthickness=1,
+        highlightbackground=theme.BORDER,
+        highlightcolor=theme.ACCENT,
+        show=show,
+    )
+    entry.insert(0, placeholder)
+    entry._placeholder = placeholder
+    entry._has_placeholder = True
+
+    def on_focus_in(_event) -> None:
+        if entry._has_placeholder:
+            entry.delete(0, "end")
+            entry.configure(fg=theme.TEXT)
+            entry._has_placeholder = False
+
+    def on_focus_out(_event) -> None:
+        if not entry.get():
+            entry.insert(0, entry._placeholder)
+            entry.configure(fg=theme.MUTED)
+            entry._has_placeholder = True
+
+    entry.bind("<FocusIn>", on_focus_in)
+    entry.bind("<FocusOut>", on_focus_out)
+    return entry
+
+
 def status_badge(parent: tk.Misc, status: str, best_score: int = 0) -> Badge:
     if status == "completed":
         return Badge(parent, f"Completada · {best_score}%", bg=theme.SUCCESS_BG, fg=theme.SUCCESS)

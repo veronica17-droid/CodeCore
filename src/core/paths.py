@@ -35,6 +35,19 @@ def progress_file() -> Path:
     return app_data_dir() / PROGRESS_FILENAME
 
 
+def user_progress_file(username: str) -> Path:
+    """Ruta del progreso de un usuario concreto."""
+    return app_data_dir() / "users" / username / PROGRESS_FILENAME
+
+
+def users_file() -> Path:
+    return app_data_dir() / "users.json"
+
+
+def session_file() -> Path:
+    return app_data_dir() / "session.json"
+
+
 def is_frozen() -> bool:
     """True cuando el programa corre desde un ejecutable de PyInstaller."""
     return bool(getattr(sys, "frozen", False))
