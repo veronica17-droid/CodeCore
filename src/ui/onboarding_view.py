@@ -118,10 +118,16 @@ class OnboardingView(tk.Frame):
                 activebackground=theme.SURFACE_ALT,
                 cursor="hand2",
                 anchor="w",
+                command=self._habilitar_siguiente,
             )
             rb.pack(anchor="w", pady=4, fill="x")
 
         self.btn_next.configure(state="disabled")
+
+    def _habilitar_siguiente(self) -> None:
+        """Habilita el botón Siguiente cuando el usuario selecciona una opción."""
+        if self.selected_var and self.selected_var.get():
+            self.btn_next.configure(state="normal")
 
     def _siguiente(self) -> None:
         if not self.selected_var or not self.selected_var.get():

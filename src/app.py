@@ -144,7 +144,7 @@ class CodeCoreApp(tk.Tk):
         """Carga el perfil y progreso de un usuario que ya tiene sesión guardada."""
         profile_store = ProfileStore()
         profile = profile_store.load(username)
-        if profile:
+        if profile and profile.survey_completed:
             self.current_username = username
             self.store = ProgressStore(path=user_progress_file(username))
             self.progress = self.store.load()
@@ -157,12 +157,16 @@ class CodeCoreApp(tk.Tk):
             self._set_active("welcome")
             self.refresh_shell()
         else:
-            # No hay perfil: ir al login para crear uno.
+            # No hay perfil o no hizo encuesta: ir al login para crear uno.
             self.hide_sidebar()
             self.navigate(AuthView, on_auth_success=self._on_auth_success)
 
-    def _on_auth_success(self, username: str) -> None:
-        """Tras login/registro exitoso: verifica si necesita encuesta de onboarding."""
+    def _on_auth_success(self, username: str, is_register: bool = False) -> None:
+        """Tras login/registro exitoso.
+
+        Si es registro nuevo (is_register=True), siempre muestra la encuesta.
+        Si es login existente, solo muestra la encuesta si aún no la ha hecho.
+        """
         self.auth_store = AuthStore()
         self.store = ProgressStore(path=user_progress_file(username))
         self.current_username = username
@@ -170,8 +174,12 @@ class CodeCoreApp(tk.Tk):
         profile_store = ProfileStore()
         profile = profile_store.load(username)
 
-        if profile and profile.survey_completed:
-            # Ya hizo la encuesta: carga su progreso y entra a la app.
+        if is_register:
+            # Registro nuevo: siempre mostrar encuesta de onboarding.
+            self.hide_sidebar()
+            self.navigate(OnboardingView, username=username)
+        elif profile and profile.survey_completed:
+            # Login existente con encuesta ya hecha: entra directo a la app.
             self.progress = self.store.load()
             if self.progress.level is None and profile.level:
                 self.store.set_level(self.progress, profile.level)
@@ -181,7 +189,7 @@ class CodeCoreApp(tk.Tk):
             self._set_active("welcome")
             self.refresh_shell()
         else:
-            # Primera vez: mostrar encuesta de onboarding (sin barra lateral).
+            # Login sin encuesta: mostrar encuesta de onboarding.
             self.hide_sidebar()
             self.navigate(OnboardingView, username=username)
 

@@ -187,7 +187,7 @@ class AuthView(tk.Frame):
                 ok, msg = self.auth.login(username, password)
                 if ok:
                     self._show_message(msg, error=False)
-                    self.app.after(700, lambda: self.on_auth_success(username))
+                    self.app.after(700, lambda: self.on_auth_success(username, is_register=False))
                 else:
                     self._show_message(msg)
             else:
@@ -198,7 +198,7 @@ class AuthView(tk.Frame):
                 ok, msg = self.auth.register(username, password)
                 if ok:
                     self._show_message(msg, error=False)
-                    self.app.after(1000, lambda: self.on_auth_success(username))
+                    self.app.after(1000, lambda: self.on_auth_success(username, is_register=True))
                 else:
                     self._show_message(msg)
         except Exception as exc:  # noqa: BLE001 - mostrar error al usuario
