@@ -124,8 +124,14 @@ class CodeCoreApp(tk.Tk):
     # ------------------------------------------------------------------
 
     def _start_auth_flow(self) -> None:
-        """Muestra la pantalla de login/registro antes de la app."""
-        self.navigate(AuthView, on_auth_success=self._on_auth_success)
+        """Muestra la pantalla de login/registro, o restaura la sesión guardada."""
+        auth_store = AuthStore()
+        saved_user = auth_store.current_user()
+        if saved_user:
+            # Sesión activa: entra directamente sin pedir credenciales.
+            self._on_auth_success(saved_user)
+        else:
+            self.navigate(AuthView, on_auth_success=self._on_auth_success)
 
     def _on_auth_success(self, username: str) -> None:
         """Tras login/registro exitoso: carga progreso del usuario y abre Inicio."""
