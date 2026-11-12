@@ -59,6 +59,7 @@ def mk_button(
     width: int | None = None,
     **kwargs,
 ) -> tk.Button:
+    # 'kind' es un parámetro exclusivo de mk_button y NO se pasa a tk.Button.
     bg, fg, hover, border = _BUTTON_KINDS[kind]
     if bg is None:
         bg = parent.cget("bg")

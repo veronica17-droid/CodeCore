@@ -129,19 +129,40 @@ class AuthView(tk.Frame):
 
     def _set_login_mode(self) -> None:
         self.mode = "login"
-        self.btn_login_mode.configure(kind="primary")
-        self.btn_register_mode.configure(kind="ghost")
+        self._style_mode_button(self.btn_login_mode, active=True)
+        self._style_mode_button(self.btn_register_mode, active=False)
         self.btn_action.configure(text="Entrar")
         self._build_form()
         self._clear_message()
 
     def _set_register_mode(self) -> None:
         self.mode = "register"
-        self.btn_login_mode.configure(kind="ghost")
-        self.btn_register_mode.configure(kind="primary")
+        self._style_mode_button(self.btn_login_mode, active=False)
+        self._style_mode_button(self.btn_register_mode, active=True)
         self.btn_action.configure(text="Crear cuenta")
         self._build_form()
         self._clear_message()
+
+    def _style_mode_button(self, button: tk.Button, *, active: bool) -> None:
+        """Cambia el aspecto de un botón de modo (login/registro) sin pasar 'kind' a Tk."""
+        if active:
+            button.configure(
+                bg=theme.ACCENT,
+                fg="#FFFFFF",
+                activebackground=theme.ACCENT_HOVER,
+                activeforeground="#FFFFFF",
+                highlightbackground=theme.ACCENT,
+                highlightcolor=theme.ACCENT,
+            )
+        else:
+            button.configure(
+                bg=theme.SURFACE,
+                fg=theme.ACCENT,
+                activebackground=theme.ACCENT_SOFT,
+                activeforeground=theme.ACCENT,
+                highlightbackground=None,
+                highlightcolor=None,
+            )
 
     def _clear_message(self) -> None:
         self.message_label.configure(text="", fg=theme.DANGER)
