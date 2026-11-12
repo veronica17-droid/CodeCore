@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "level_id": "advanced",
+  "lessons": [
+    {
+      "id": "adv_05_poo",
+      "level_id": "advanced",
+      "order": 5,
+      "title": "Programación orientada a objetos: clases y objetos",
+      "concept": "Clases, objetos, atributos y métodos",
+      "minutes": 22,
+      "problem": {
+        "scenario": "Estás modelando una biblioteca. Cada libro tiene título, autor y si está prestado o no. Necesitas crear varios libros, prestarlos y devolverlos. Sin clases, tendrías diccionarios sueltos y funciones dispersas que no guardan relación clara.",
+        "question": "¿Cómo agrupas datos y comportamiento relacionados bajo una sola estructura?",
+        "constraints": [
+          "Define una clase Libro con __init__.",
+          "Cada libro tiene título, autor y prestado (booleano).",
+          "Incluye un método prestar() que cambie el estado de prestado.",
+          "Crea al menos dos objetos de la clase."
+        ],
+        "reflection": "Una clase no es solo datos: es datos con el comportamiento que los manipula."
+      },
+      "guide": {
+        "mental_model": "Una clase es un molde; un objeto es algo creado a partir de ese molde. __init__ define el estado inicial de cada objeto. Los métodos son funciones que pertenecen a la clase y pueden leer y modificar el estado del objeto mediante self.",
+        "steps": [
+          {
+            "title": "1. Define la clase con __init__",
+            "body": "class Libro: def __init__(self, titulo, autor): ... guarda los atributos con self."
+          },
+          {
+            "title": "2. Añade métodos que usen self",
+            "body": "def prestar(self): self.prestado = True cambia el estado del objeto concreto."
+          },
+          {
+            "title": "3. Crea objetos",
+            "body": "libro1 = Libro(\"1984\", \"Orwell\") crea una instancia propia con sus propios atributos."
+          }
+        ],
+        "questions": [
+          "¿Qué hace self dentro de un método?",
+          "¿Qué diferencia hay entre una clase y un objeto?",
+          "¿Por qué necesitas __init__?"
+        ],
+        "common_mistakes": [
+          "Olvidar self como primer parámetro de los métodos.",
+          "Crear atributos fuera de __init__ que no existen en todos los objetos.",
+          "Confundir la definición de la clase con la creación de un objeto."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Define una clase Libro con __init__(self, titulo, autor) que guarde título, autor y prestado=False. Añade un método prestar(self) que establezca prestado=True y devuelva el libro. Crea dos libros, presta uno y muestra el estado de ambos.",
+        "language": "python",
+        "starter_code": "class Libro:\n    def __init__(self, titulo, autor):\n        ...\n\n    def prestar(self):\n        ...\n\nlibro1 = Libro(\"1984\", \"Orwell\")\nlibro2 = Libro(\"Cien años de soledad\", \"García Márquez\")\n\nlibro1.prestar()\nprint(...)\nprint(...)",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "class",
+            "min": 1,
+            "message": "Falta definir la clase Libro."
+          },
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 2,
+            "message": "Necesitas __init__ y el método prestar."
+          },
+          {
+            "type": "contains",
+            "value": "self",
+            "message": "Usa self para acceder a los atributos del objeto."
+          },
+          {
+            "type": "count",
+            "value": "Libro(",
+            "min": 2,
+            "message": "Crea al menos dos objetos de la clase Libro."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Muestra el estado de los libros."
+          }
+        ],
+        "hints": [
+          "self.titulo = titulo guarda el título en el objeto.",
+          "def prestar(self): self.prestado = True; return self.",
+          "print(libro1.prestado) muestra si está prestado."
+        ],
+        "solution": "class Libro:\n    def __init__(self, titulo, autor):\n        self.titulo = titulo\n        self.autor = autor\n        self.prestado = False\n\n    def prestar(self):\n        self.prestado = True\n        return self\n\nlibro1 = Libro(\"1984\", \"Orwell\")\nlibro2 = Libro(\"Cien años de soledad\", \"García Márquez\")\n\nlibro1.prestar()\nprint(f\"{libro1.titulo}: prestado={libro1.prestado}\")\nprint(f\"{libro2.titulo}: prestado={libro2.prestado}\")"
+      },
+      "success_criteria": [
+        "La clase Libro tiene __init__ y al menos un método.",
+        "self se usa para acceder a atributos del objeto.",
+        "Se crean dos objetos independientes.",
+        "Prestar un libro no afecta al otro."
+      ],
+      "resource_ids": [
+        "res_think_python",
+        "res_python_tutorial"
+      ]
+    },
+    {
+      "id": "adv_06_archivos",
+      "level_id": "advanced",
+      "order": 6,
+      "title": "Archivos: leer y escribir datos",
+      "concept": "Apertura, lectura y escritura de archivos con with",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Quieres guardar los resultados de una encuesta en un archivo para consultarlos mañana. También necesitas leer ese archivo y mostrar su contenido. Si olvidas cerrar el archivo, los datos pueden no guardarse completamente o quedar bloqueados.",
+        "question": "¿Cómo escribes datos en un archivo y después los lees, asegurándote de que el archivo se cierre correctamente?",
+        "constraints": [
+          "Usa with open(...) para manejar el archivo.",
+          "Escribe al menos dos líneas de texto.",
+          "Lee el archivo y muestra su contenido.",
+          "No cierres el archivo manualmente con .close(); with lo hace automáticamente."
+        ],
+        "reflection": "with open(...) es la forma segura de trabajar con archivos: se cierra solo aunque ocurra un error."
+      },
+      "guide": {
+        "mental_model": "with open(ruta, modo) as archivo: abre el archivo, te da una variable para trabajarlo y lo cierra automáticamente al salir del bloque, incluso si hay un error. Modo \"w\" escribe (sobreescribe), modo \"r\" lee.",
+        "steps": [
+          {
+            "title": "1. Escribe con with y modo \"w\"",
+            "body": "with open(\"datos.txt\", \"w\") as f: f.write(\"línea 1\\n\")."
+          },
+          {
+            "title": "2. Lee con with y modo \"r\"",
+            "body": "with open(\"datos.txt\", \"r\") as f: contenido = f.read()."
+          },
+          {
+            "title": "3. No cierres manualmente",
+            "body": "with se encarga de cerrar el archivo al salir del bloque."
+          }
+        ],
+        "questions": [
+          "¿Qué diferencia hay entre modo \"w\" y modo \"a\"?",
+          "¿Por qué es mejor with que abrir y cerrar manualmente?",
+          "¿Qué devuelve f.read() si el archivo está vacío?"
+        ],
+        "common_mistakes": [
+          "Escribir y leer en la misma ejecución sin cerrar entre medio.",
+          "Usar modo \"w\" cuando solo se quiere leer (sobrescribe el archivo).",
+          "Llamar a f.close() dentro de with, lo cual es redundante pero no dañino."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Escribe en un archivo llamado notas.txt tres líneas con nombres y calificaciones (por ejemplo, \"Ana: 8\", \"Luis: 7\", \"Marta: 9\"). Luego lee el archivo e imprime su contenido completo.",
+        "language": "python",
+        "starter_code": "# Escribe tres líneas en notas.txt.\n\n# Lee notas.txt e imprime su contenido.\n",
+        "checks": [
+          {
+            "type": "contains",
+            "value": "with open",
+            "message": "Usa with open(...) para manejar el archivo."
+          },
+          {
+            "type": "contains",
+            "value": "write",
+            "message": "Escribe contenido en el archivo."
+          },
+          {
+            "type": "contains",
+            "value": "read",
+            "message": "Lee el contenido del archivo."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Imprime el contenido leído."
+          },
+          {
+            "type": "not_contains",
+            "value": ".close()",
+            "message": "No cierres el archivo manualmente; with lo hace por ti."
+          }
+        ],
+        "hints": [
+          "with open(\"notas.txt\", \"w\") as f: f.write(...).",
+          "Escribe cada línea con \\n al final.",
+          "with open(\"notas.txt\", \"r\") as f: print(f.read())."
+        ],
+        "solution": "with open(\"notas.txt\", \"w\") as f:\n    f.write(\"Ana: 8\\n\")\n    f.write(\"Luis: 7\\n\")\n    f.write(\"Marta: 9\\n\")\n\nwith open(\"notas.txt\", \"r\") as f:\n    print(f.read())"
+      },
+      "success_criteria": [
+        "Se escriben datos en un archivo con with open.",
+        "Se lee el archivo y se muestra su contenido.",
+        "El archivo se cierra automáticamente gracias a with.",
+        "No hay llamadas manuales a .close()."
+      ],
+      "resource_ids": [
+        "res_python_tutorial",
+        "res_automate"
+      ]
+    },
+    {
+      "id": "adv_07_algoritmos_basicos",
+      "level_id": "advanced",
+      "order": 7,
+      "title": "Algoritmos básicos: búsqueda y ordenamiento",
+      "concept": "Búsqueda binaria y ordenamiento simple",
+      "minutes": 22,
+      "problem": {
+        "scenario": "Tienes una lista ordenada de 1000 números y necesitas saber si un número está en ella. Puedes revisar uno por uno (búsqueda lineal) o dividir repetidamente a la mitad (búsqueda binaria). La segunda es mucho más rápida, pero solo funciona si la lista está ordenada.",
+        "question": "¿Cómo encuentras un elemento en una lista ordenada revisando la menor cantidad posible de elementos?",
+        "constraints": [
+          "Implementa una búsqueda binaria (no lineal).",
+          "La lista de entrada debe estar ordenada.",
+          "Devuelve el índice del elemento o -1 si no está.",
+          "No uses el método .index() ni el operador in para la búsqueda."
+        ],
+        "reflection": "La búsqueda binaria reduce a la mitad el espacio de búsqueda en cada paso: de 1000 elementos pasas a 500, luego 250, 125, etc. Es logarítmica, O(log n)."
+      },
+      "guide": {
+        "mental_model": "Imagina buscar una palabra en un diccionario: abres a la mitad, comparas, desciertas la mitad donde no está, y repites con la mitad que queda. Eso es búsqueda binaria: l, r (izquierda y derecha) delimitan el rango, y m (medio) es la prueba.",
+        "steps": [
+          {
+            "title": "1. Define los límites",
+            "body": "izquierda = 0, derecha = len(lista) - 1."
+          },
+          {
+            "title": "2. Calcula el medio",
+            "body": "medio = (izquierda + derecha) // 2."
+          },
+          {
+            "title": "3. Compara y descarta la mitad",
+            "body": "Si lista[medio] es el objetivo, devuelve medio. Si es mayor, busca a la izquierda; si es menor, busca a la derecha."
+          },
+          {
+            "title": "4. Detente cuando no quede rango",
+            "body": "Si izquierda > derecha, el elemento no está; devuelve -1."
+          }
+        ],
+        "questions": [
+          "¿Por qué la lista debe estar ordenada para búsqueda binaria?",
+          "¿Cuántas comparaciones se necesitan para 1000 elementos?",
+          "¿Qué ocurre si el elemento está en el borde de la lista?"
+        ],
+        "common_mistakes": [
+          "Olvidar actualizar izquierda o derecha, creando un bucle infinito.",
+          "Usar / en lugar de // para el medio, obteniendo un float.",
+          "No devolver -1 cuando el elemento no se encuentra."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Implementa busqueda_binaria(lista, objetivo) que devuelva el índice del objetivo en una lista ordenada, o -1 si no está. Prueba con una lista ordenada y un elemento que existe y otro que no.",
+        "language": "python",
+        "starter_code": "def busqueda_binaria(lista, objetivo):\n    izquierda = 0\n    derecha = len(lista) - 1\n    while izquierda <= derecha:\n        medio = (izquierda + derecha) // 2\n        if lista[medio] == objetivo:\n            ...\n        elif lista[medio] < objetivo:\n            ...\n        else:\n            ...\n    return -1\n\nprint(busqueda_binaria([1, 3, 5, 7, 9], 5))\nprint(busqueda_binaria([1, 3, 5, 7, 9], 4))",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 1,
+            "message": "Falta definir busqueda_binaria(lista, objetivo)."
+          },
+          {
+            "type": "ast",
+            "value": "while",
+            "min": 1,
+            "message": "Necesitas un bucle while para repetir la búsqueda."
+          },
+          {
+            "type": "ast",
+            "value": "if",
+            "min": 1,
+            "message": "Se necesitan comparaciones para decidir qué mitad descartar."
+          },
+          {
+            "type": "contains",
+            "value": "return -1",
+            "message": "Devuelve -1 cuando el elemento no se encuentra."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 2,
+            "message": "Prueba con un elemento que existe y uno que no."
+          }
+        ],
+        "hints": [
+          "Si lista[medio] == objetivo, devuelve medio.",
+          "Si lista[medio] < objetivo, busca a la derecha: izquierda = medio + 1.",
+          "Si lista[medio] > objetivo, busca a la izquierda: derecha = medio - 1."
+        ],
+        "solution": "def busqueda_binaria(lista, objetivo):\n    izquierda = 0\n    derecha = len(lista) - 1\n    while izquierda <= derecha:\n        medio = (izquierda + derecha) // 2\n        if lista[medio] == objetivo:\n            return medio\n        elif lista[medio] < objetivo:\n            izquierda = medio + 1\n        else:\n            derecha = medio - 1\n    return -1\n\nprint(busqueda_binaria([1, 3, 5, 7, 9], 5))  # 2\nprint(busqueda_binaria([1, 3, 5, 7, 9], 4))  # -1"
+      },
+      "success_criteria": [
+        "Devuelve el índice correcto cuando el elemento existe.",
+        "Devuelve -1 cuando no existe.",
+        "La lista permanece ordenada durante la búsqueda.",
+        "Puedes explicar por qué es más rápida que revisar uno por uno."
+      ],
+      "resource_ids": [
+        "res_bigocheatsheet",
+        "res_visualgo"
+      ]
+    },
+    {
+      "id": "adv_08_testing",
+      "level_id": "advanced",
+      "order": 8,
+      "title": "Pruebas unitarias: verifica que tu código funciona",
+      "concept": "assert y pruebas automáticas",
+      "minutes": 18,
+      "problem": {
+        "scenario": "Escribiste una función que calcula el área de un círculo. Funciona con el radio 5, pero ¿y con radio 0? ¿Y con un radio negativo? Sin pruebas automáticas, cada cambio obliga a probar todo a mano otra vez.",
+        "question": "¿Cómo escribes pruebas que se ejecuten solas y te avisen si algo deja de funcionar?",
+        "constraints": [
+          "Usa assert para verificar resultados esperados.",
+          "Prueba al menos tres casos diferentes (incluyendo un caso límite).",
+          "Cada assert debe incluir un mensaje descriptivo.",
+          "Si algún assert falla, el programa se detiene y muestra el mensaje."
+        ],
+        "reflection": "Una prueba no demuestra que el código es correcto: demuestra que no es incorrecto en los casos que probaste."
+      },
+      "guide": {
+        "mental_model": "assert condición, mensaje comprueba que la condición es verdadera. Si no lo es, lanza AssertionError con el mensaje. Las pruebas unitarias prueban una función aislada con entradas conocidas y salidas esperadas.",
+        "steps": [
+          {
+            "title": "1. Elige casos representativos",
+            "body": "Prueba el caso normal, el caso límite (cero, vacío) y un caso que debería fallar."
+          },
+          {
+            "title": "2. Escribe asserts con mensaje",
+            "body": "assert area(5) == 78.5, \"El área de radio 5 debería ser 78.5\"."
+          },
+          {
+            "title": "3. Ejecuta las pruebas antes de cada cambio",
+            "body": "Si un assert falla, sabes exactamente qué rompiste y dónde."
+          }
+        ],
+        "questions": [
+          "¿Qué ocurre si un assert falla?",
+          "¿Por qué probar con casos límite es más valioso que con casos normales?",
+          "¿Pueden las pruebas demostrar que el código nunca fallará?"
+        ],
+        "common_mistakes": [
+          "Solo probar casos que sabes que funcionan.",
+          "Usar assert sin mensaje, dificultando el diagnóstico.",
+          "Confundir pruebas con ejemplos de uso en el programa principal."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Define es_par(n) que devuelva True si n es par. Escribe al menos tres assert para probarla: con un par, con un impar y con cero. Cada assert debe tener un mensaje.",
+        "language": "python",
+        "starter_code": "def es_par(n):\n    # Devuelve True si n es par, False si es impar.\n    ...\n\n# Escribe al menos tres pruebas con assert.\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "function",
+            "min": 1,
+            "message": "Falta definir es_par(n)."
+          },
+          {
+            "type": "contains",
+            "value": "assert",
+            "message": "Usa assert para verificar los resultados."
+          },
+          {
+            "type": "count",
+            "value": "assert",
+            "min": 3,
+            "message": "Necesitas al menos tres pruebas."
+          },
+          {
+            "type": "contains",
+            "value": "es_par(",
+            "message": "Llama a es_par dentro de los asserts."
+          }
+        ],
+        "hints": [
+          "def es_par(n): return n % 2 == 0.",
+          "assert es_par(4) == True, \"4 debería ser par\".",
+          "assert es_par(0) == True, \"0 es par\".",
+          "assert es_par(7) == False, \"7 no es par\"."
+        ],
+        "solution": "def es_par(n):\n    return n % 2 == 0\n\nassert es_par(4) == True, \"4 debería ser par\"\nassert es_par(7) == False, \"7 no es par\"\nassert es_par(0) == True, \"0 es par\"\nprint(\"Todas las pruebas pasaron\")"
+      },
+      "success_criteria": [
+        "es_par devuelve True para pares y False para impares.",
+        "Hay al menos tres asserts con mensajes.",
+        "Se prueba el caso límite (cero).",
+        "Si todos pasan, se imprime un mensaje de éxito."
+      ],
+      "resource_ids": [
+        "res_python_pep8",
+        "res_cs50"
+      ]
+    }
+  ]
+}

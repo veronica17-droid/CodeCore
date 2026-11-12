@@ -88,11 +88,11 @@ class ProgressStoreTest(unittest.TestCase):
         self.store.record_attempt(progress, "beg_01_orden", 100, True, "ok")
         summary = self.store.summary(progress, self.repo.levels)
         self.assertEqual(summary["overall"]["completed"], 1)
-        self.assertEqual(summary["overall"]["total"], 13)
+        self.assertEqual(summary["overall"]["total"], 25)
         beginner = next(row for row in summary["levels"] if row["id"] == "beginner")
         self.assertEqual(beginner["completed"], 1)
-        self.assertEqual(beginner["total"], 5)
-        self.assertEqual(beginner["percent"], 20)
+        self.assertEqual(beginner["total"], 9)
+        self.assertEqual(beginner["percent"], 11)
 
     def test_reset_level_keeps_other_levels(self) -> None:
         progress = Progress()

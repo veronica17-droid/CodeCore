@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "level_id": "intermediate",
+  "lessons": [
+    {
+      "id": "int_05_listas_comprension",
+      "level_id": "intermediate",
+      "order": 5,
+      "title": "Listas por comprensión: crear listas en una línea",
+      "concept": "List comprehensions y transformación",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Tienes una lista de temperaturas en grados Celsius y quieres convertirlas a Fahrenheit. Podrías crear una lista vacía, recorrer con for, calcular y agregar cada una. Pero hay una forma más corta y legible de expresar la misma idea.",
+        "question": "¿Cómo transformas cada elemento de una lista en una nueva lista de forma concisa?",
+        "constraints": [
+          "Usa una lista por comprensión (list comprehension).",
+          "La fórmula de Celsius a Fahrenheit es: celsius * 9/5 + 32.",
+          "El resultado debe ser una lista nueva, no modificar la original.",
+          "No uses un bucle for tradicional con append."
+        ],
+        "reflection": "Una comprensión de lista expresa «transforma cada elemento» en una sola línea legible."
+      },
+      "guide": {
+        "mental_model": "[expresion for elemento in lista] lee como «para cada elemento de la lista, calcula la expresión y pon el resultado en una lista nueva». Es el equivalente compacto de un bucle for con append.",
+        "steps": [
+          {
+            "title": "1. Identifica la transformación",
+            "body": "¿Qué le haces a cada elemento? Aquí es multiplicar por 9/5 y sumar 32."
+          },
+          {
+            "title": "2. Escribe la comprensión",
+            "body": "fahrenheit = [c * 9/5 + 32 for c in celsius]. La variable c recorre cada elemento."
+          },
+          {
+            "title": "3. Compara con el bucle tradicional",
+            "body": "La comprensión es más corta, pero el bucle tradicional es más fácil de depurar cuando la lógica se complica."
+          }
+        ],
+        "questions": [
+          "¿Qué variable recorre cada elemento en [x * 2 for x in numeros]?",
+          "¿Cuándo preferirías un bucle for tradicional sobre una comprensión?",
+          "¿La lista original cambia después de una comprensión?"
+        ],
+        "common_mistakes": [
+          "Escribir el for después de la expresión en lugar de después del for.",
+          "Olvidar los corchetes externos.",
+          "Intentar modificar la lista original en lugar de crear una nueva."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Dada la lista numeros = [1, 2, 3, 4, 5], crea una nueva lista llamada dobles con cada número multiplicado por 2, usando una lista por comprensión. Imprime el resultado.",
+        "language": "python",
+        "starter_code": "numeros = [1, 2, 3, 4, 5]\n\n# Crea dobles con una lista por comprensión.\n\ndobles = ...\n\nprint(dobles)",
+        "checks": [
+          {
+            "type": "contains",
+            "value": "for ",
+            "message": "La comprensión necesita un for dentro de los corchetes."
+          },
+          {
+            "type": "not_contains",
+            "value": ".append(",
+            "message": "No uses append; la comprensión crea la lista directamente."
+          },
+          {
+            "type": "ast",
+            "value": "list",
+            "min": 1,
+            "message": "Necesitas crear una lista nueva con corchetes."
+          },
+          {
+            "type": "contains",
+            "value": "print(",
+            "message": "Imprime la lista resultante."
+          }
+        ],
+        "hints": [
+          "dobles = [n * 2 for n in numeros].",
+          "La variable n recorre cada elemento de numeros.",
+          "Todo va entre corchetes: [...]"
+        ],
+        "solution": "numeros = [1, 2, 3, 4, 5]\ndobles = [n * 2 for n in numeros]\nprint(dobles)"
+      },
+      "success_criteria": [
+        "Se usa una lista por comprensión, no un bucle con append.",
+        "Cada número se multiplica por 2.",
+        "La lista original no se modifica.",
+        "El resultado se imprime."
+      ],
+      "resource_ids": [
+        "res_python_lists",
+        "res_realpython"
+      ]
+    },
+    {
+      "id": "int_06_funciones_avanzadas",
+      "level_id": "intermediate",
+      "order": 6,
+      "title": "Funciones avanzadas: args, kwargs y lambda",
+      "concept": "*args, **kwargs y funciones lambda",
+      "minutes": 22,
+      "problem": {
+        "scenario": "Quieres escribir una función que acepte cualquier número de argumentos y los sume. A veces recibirá dos números, otras cinco, y a veces ninguno. No puedes definir tantos parámetros como casos posibles.",
+        "question": "¿Cómo defines una función que acepte un número variable de argumentos?",
+        "constraints": [
+          "Usa *args para aceptar cualquier número de argumentos posicionales.",
+          "Usa una función lambda para una operación simple en una línea.",
+          "La función debe devolver la suma de todos los argumentos.",
+          "No uses un número fijo de parámetros."
+        ],
+        "reflection": "*args y **kwargs permiten que una función sea flexible sin perder claridad en su propósito."
+      },
+      "guide": {
+        "mental_model": "*args agrupa todos los argumentos posicionales extra en una tupla. **kwargs hace lo mismo con argumentos nombrados. Una lambda es una función anónima de una sola expresión, útil para operaciones simples que no merecen un nombre propio.",
+        "steps": [
+          {
+            "title": "1. Usa *args para cantidad variable",
+            "body": "def sumar_todos(*args): recibe todos los argumentos en una tupla llamada args."
+          },
+          {
+            "title": "2. Itera sobre args",
+            "body": "Puedes recorrer args con un bucle for o usar sum(args) directamente."
+          },
+          {
+            "title": "3. Crea una lambda para operaciones simples",
+            "body": "duplicar = lambda x: x * 2 define una función anónima que duplica su entrada."
+          }
+        ],
+        "questions": [
+          "¿Qué tipo de dato es args dentro de la función?",
+          "¿Cuándo usarías una lambda en lugar de def?",
+          "¿Puedes usar *args y **kwargs en la misma función?"
+        ],
+        "common_mistakes": [
+          "Escribir *args pero tratarlo como un solo valor en lugar de una tupla.",
+          "Usar lambda para lógica compleja que merece un nombre y documentación.",
+          "Olvidar que lambda solo puede tener una expresión."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Define sumar_todos(*args) que devuelva la suma de todos sus argumentos. Luego crea una lambda llamada duplicar que multiplique su entrada por 2. Prueba ambas.",
+        "language": "python",
+        "starter_code": "def sumar_todos(*args):\n    # Suma todos los argumentos recibidos.\n    ...\n\nduplicar = lambda ...\n\nprint(sumar_todos(1, 2, 3))\nprint(duplicar(5))",
+        "checks": [
+          {
+            "type": "contains",
+            "value": "*args",
+            "message": "Usa *args para aceptar cualquier número de argumentos."
+          },
+          {
+            "type": "ast",
+            "value": "return",
+            "min": 1,
+            "message": "La función debe devolver la suma."
+          },
+          {
+            "type": "contains",
+            "value": "lambda",
+            "message": "Crea una función lambda llamada duplicar."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 2,
+            "message": "Imprime el resultado de ambas pruebas."
+          }
+        ],
+        "hints": [
+          "def sumar_todos(*args): return sum(args).",
+          "duplicar = lambda x: x * 2.",
+          "Prueba con sumar_todos(1, 2, 3) y duplicar(5)."
+        ],
+        "solution": "def sumar_todos(*args):\n    return sum(args)\n\nduplicar = lambda x: x * 2\n\nprint(sumar_todos(1, 2, 3))\nprint(duplicar(5))"
+      },
+      "success_criteria": [
+        "sumar_todos acepta cualquier número de argumentos con *args.",
+        "duplicar es una lambda que multiplica por 2.",
+        "Ambas funciones se prueban con print.",
+        "El código es conciso y legible."
+      ],
+      "resource_ids": [
+        "res_python_functions",
+        "res_realpython"
+      ]
+    },
+    {
+      "id": "int_07_modulos",
+      "level_id": "intermediate",
+      "order": 7,
+      "title": "Módulos: organizar y reutilizar código",
+      "concept": "Importar módulos y crear los tuyos propios",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Tienes varias funciones útiles (saludar, despedir, calcular_promedio) que usas en distintos programas. Copiarlas y pegarlas en cada archivo es un error: si corriges una, tienes que actualizar todas las copias.",
+        "question": "¿Cómo defines funciones en un archivo separado y las usas desde otro programa?",
+        "constraints": [
+          "Crea un archivo llamado utilidades.py con al menos dos funciones.",
+          "Importa esas funciones desde otro archivo usando import.",
+          "Usa al menos una función del módulo estándar (por ejemplo, math o random).",
+          "No copies y pegues el código de las funciones en el programa principal."
+        ],
+        "reflection": "Un módulo es un archivo de Python que puede importarse. Organizar código en módulos evita duplicación y facilita el mantenimiento."
+      },
+      "guide": {
+        "mental_model": "import modulo trae las definiciones de otro archivo al actual. Para usar una función del módulo, escribes modulo.funcion(). El módulo estándar de Python incluye math, random, datetime y otros listos para usar.",
+        "steps": [
+          {
+            "title": "1. Crea el módulo",
+            "body": "Escribe utilidades.py con funciones definidas con def."
+          },
+          {
+            "title": "2. Importa en el programa principal",
+            "body": "import utilidades o from utilidades import saludar."
+          },
+          {
+            "title": "3. Usa las funciones importadas",
+            "body": "Llama a utilidades.saludar(\"Ana\") o directamente saludar(\"Ana\") si usaste from...import."
+          }
+        ],
+        "questions": [
+          "¿Qué diferencia hay entre import modulo y from modulo import funcion?",
+          "¿Por qué es mejor importar que copiar y pegar?",
+          "¿Qué módulos de la biblioteca estándar conoces?"
+        ],
+        "common_mistakes": [
+          "Olvidar que ambos archivos deben estar en la misma carpeta.",
+          "Intentar importar antes de crear el archivo del módulo.",
+          "Confundir el nombre del archivo con el nombre del módulo."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Crea un archivo utilidades.py con una función saludar(nombre) que devuelva un saludo. Desde el programa principal, importa saludar y úsala. También importa math e imprime math.sqrt(16).",
+        "language": "python",
+        "starter_code": "# En utilidades.py:\ndef saludar(nombre):\n    return f\"Hola, {nombre}\"\n\n# En el programa principal:\n# Importa saludar y math, úsalos.\n",
+        "checks": [
+          {
+            "type": "contains",
+            "value": "import",
+            "message": "Usa import para traer funciones de otro módulo."
+          },
+          {
+            "type": "contains",
+            "value": "math",
+            "message": "Importa el módulo math de la biblioteca estándar."
+          },
+          {
+            "type": "contains",
+            "value": "sqrt",
+            "message": "Usa math.sqrt para calcular una raíz cuadrada."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Imprime los resultados."
+          }
+        ],
+        "hints": [
+          "import utilidades y luego utilidades.saludar(\"Ana\").",
+          "import math y luego math.sqrt(16).",
+          "Ambos archivos deben estar en la misma carpeta."
+        ],
+        "solution": "# En utilidades.py:\ndef saludar(nombre):\n    return f\"Hola, {nombre}\"\n\n# En el programa principal:\nimport utilidades\nimport math\n\nprint(utilidades.saludar(\"Ana\"))\nprint(math.sqrt(16))"
+      },
+      "success_criteria": [
+        "Se crea un módulo separado con funciones.",
+        "Se importan las funciones desde el programa principal.",
+        "Se usa un módulo de la biblioteca estándar.",
+        "No hay código duplicado entre archivos."
+      ],
+      "resource_ids": [
+        "res_python_tutorial",
+        "res_think_python"
+      ]
+    },
+    {
+      "id": "int_08_manejo_errores",
+      "level_id": "intermediate",
+      "order": 8,
+      "title": "Manejo de errores: try, except y finally",
+      "concept": "Excepciones específicas y limpieza",
+      "minutes": 20,
+      "problem": {
+        "scenario": "Un programa lee un archivo de configuración y convierte su contenido a número. Si el archivo no existe, no tiene el formato correcto o está vacío, el programa no debe cerrarse bruscamente: debe informar el problema y continuar.",
+        "question": "¿Cómo manejas varios tipos de error de forma diferente y aseguras que cierto código se ejecute siempre?",
+        "constraints": [
+          "Usa try para envolver código que puede fallar.",
+          "Captura al menos dos tipos de excepción diferentes (por ejemplo, FileNotFoundError y ValueError).",
+          "Usa finally para código que se ejecuta siempre, haya error o no.",
+          "No uses un except desnudo."
+        ],
+        "reflection": "Manejar errores no es ocultarlos: es decidir qué hacer cuando ocurren para que el programa siga siendo útil."
+      },
+      "guide": {
+        "mental_model": "try envuelve el código riesgoso. except captura excepciones específicas y define qué hacer. finally se ejecuta siempre, sea cual sea el resultado, y es ideal para limpiar recursos (cerrar archivos, liberar conexiones).",
+        "steps": [
+          {
+            "title": "1. Identifica qué puede fallar",
+            "body": "Abrir un archivo puede lanzar FileNotFoundError; convertir su contenido puede lanzar ValueError."
+          },
+          {
+            "title": "2. Captura cada error por separado",
+            "body": "Usa bloques except distintos para cada tipo de error, con mensajes distintos."
+          },
+          {
+            "title": "3. Usa finally para limpieza",
+            "body": "El código en finally se ejecuta aunque haya habido error o no."
+          }
+        ],
+        "questions": [
+          "¿Qué excepción lanza abrir un archivo que no existe?",
+          "¿Por qué es mejor excepto específico que except desnudo?",
+          "¿Cuándo se ejecutes finally si hay un return en el try?"
+        ],
+        "common_mistakes": [
+          "Usar except: sin especificar el tipo de error.",
+          "Poner código de limpieza fuera de finally y que no se ejecute tras un error.",
+          "Capturar errores que no se pueden manejar de forma útil."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Escribe un programa que intente abrir un archivo llamado datos.txt, lea su contenido y conviértalo a entero. Maneje FileNotFoundError si no existe y ValueError si no es un número. Use finally para imprimir «Fin del intento».",
+        "language": "python",
+        "starter_code": "try:\n    # Abre datos.txt y convierte su contenido a entero.\n    ...\nexcept FileNotFoundError:\n    print(\"El archivo no existe.\")\nexcept ValueError:\n    print(\"El contenido no es un número válido.\")\nfinally:\n    print(\"Fin del intento.\")",
+        "checks": [
+          {
+            "type": "contains",
+            "value": "try",
+            "message": "Usa try para envolver el código que puede fallar."
+          },
+          {
+            "type": "contains",
+            "value": "except FileNotFoundError",
+            "message": "Captura FileNotFoundError específicamente."
+          },
+          {
+            "type": "contains",
+            "value": "except ValueError",
+            "message": "Captura ValueError específicamente."
+          },
+          {
+            "type": "contains",
+            "value": "finally",
+            "message": "Usa finally para código que siempre se ejecuta."
+          },
+          {
+            "type": "not_contains",
+            "value": "except:",
+            "message": "No uses un except desnudo."
+          }
+        ],
+        "hints": [
+          "open(\"datos.txt\") puede lanzar FileNotFoundError.",
+          "int(contenido) puede lanzar ValueError.",
+          "finally se ejecuta al final, pase lo que pase."
+        ],
+        "solution": "try:\n    with open(\"datos.txt\") as f:\n        contenido = int(f.read().strip())\n    print(f\"El número es {contenido}\")\nexcept FileNotFoundError:\n    print(\"El archivo no existe.\")\nexcept ValueError:\n    print(\"El contenido no es un número válido.\")\nfinally:\n    print(\"Fin del intento.\")"
+      },
+      "success_criteria": [
+        "Se captura FileNotFoundError y ValueError por separado.",
+        "Se usa finally para código de limpieza.",
+        "No hay except desnudo.",
+        "El programa no se cierra bruscamente ante errores esperados."
+      ],
+      "resource_ids": [
+        "res_python_errors",
+        "res_python_pep8"
+      ]
+    }
+  ]
+}

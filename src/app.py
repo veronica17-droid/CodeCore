@@ -22,6 +22,7 @@ from core.profile_store import ProfileStore
 from core.progress import ProgressStore
 from ui import theme, widgets
 from ui.about_view import AboutView
+from ui.achievements_view import AchievementsView
 from ui.auth_view import AuthView
 from ui.library_view import LibraryView
 from ui.lesson_view import LessonView
@@ -35,6 +36,7 @@ NAV_ITEMS = (
     ("path", "Mi ruta"),
     ("library", "Biblioteca"),
     ("progress", "Progreso"),
+    ("achievements", "Medallas"),
     ("about", "Acerca de"),
 )
 
@@ -351,6 +353,8 @@ class CodeCoreApp(tk.Tk):
             self.open_library()
         elif key == "progress":
             self.open_progress()
+        elif key == "achievements":
+            self.open_achievements()
         elif key == "about":
             self.open_about()
 
@@ -387,6 +391,10 @@ class CodeCoreApp(tk.Tk):
     def open_progress(self) -> None:
         self.navigate(ProgressView)
         self._set_active("progress")
+
+    def open_achievements(self) -> None:
+        self.navigate(AchievementsView)
+        self._set_active("achievements")
 
     def open_about(self) -> None:
         self.navigate(AboutView)

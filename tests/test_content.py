@@ -26,7 +26,7 @@ class ContentRepositoryTest(unittest.TestCase):
             self.assertTrue(all(lesson.level_id == level.id for lesson in lessons))
 
     def test_expected_lesson_count(self) -> None:
-        self.assertEqual(len(self.repo.lessons), 13)
+        self.assertEqual(len(self.repo.lessons), 25)
 
     def test_lesson_ids_are_unique_and_have_required_sections(self) -> None:
         for lesson in self.repo.lessons.values():

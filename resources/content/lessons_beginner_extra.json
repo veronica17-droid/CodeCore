@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "level_id": "beginner",
+  "lessons": [
+    {
+      "id": "beg_06_tipos_datos",
+      "level_id": "beginner",
+      "order": 6,
+      "title": "Tipos de datos: números, texto y verdad",
+      "concept": "String, entero, decimal y booleano",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Un programa para una tienda necesita guardar el precio de un producto, su nombre, si está en oferta y cuánto cuesta con decimales. Cada dato tiene una naturaleza distinta: el precio no es texto, el nombre no es un número, y «en oferta» solo puede ser sí o no.",
+        "question": "¿Qué tipo de dato usarías para cada pieza de información y por qué?",
+        "constraints": [
+          "Usa al menos un string, un entero, un decimal y un booleano.",
+          "Cada variable debe tener un nombre que describa qué guarda.",
+          "Imprime el tipo de cada variable con type().",
+          "No mezcles tipos sin convertir explícitamente."
+        ],
+        "reflection": "El tipo de un dato determina qué operaciones puedes hacer con él."
+      },
+      "guide": {
+        "mental_model": "Los tipos de datos son categorías de valores. Un string es texto, un entero es un número entero, un decimal tiene coma flotante y un booleano es verdadero o falso. Cada uno admite operaciones distintas: puedes sumar enteros pero no restar strings.",
+        "steps": [
+          {
+            "title": "1. Clasifica cada dato",
+            "body": "Pregunta: ¿es texto, número entero, número con decimales o sí/no? Esa respuesta elige el tipo."
+          },
+          {
+            "title": "2. Asigna con el tipo correcto",
+            "body": "Un texto va entre comillas: nombre = \"producto\". Un número no: precio = 19.99. Un booleano es True o False, sin comillas."
+          },
+          {
+            "title": "3. Usa type() para verificar",
+            "body": "type(variable) te dice qué tipo tiene. Úsalo para confirmar que no confundiste un string con un número."
+          }
+        ],
+        "questions": [
+          "¿Qué ocurre si intentas sumar \"5\" (texto) y 3 (entero)?",
+          "¿Por qué True no va entre comillas?",
+          "¿Qué tipo tiene el resultado de 10 / 3?"
+        ],
+        "common_mistakes": [
+          "Escribir números entre comillas, convirtiéndolos en texto.",
+          "Usar 1 y 0 en lugar de True y False para estados de sí/no.",
+          "Olvidar que input() devuelve siempre texto."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Crea cuatro variables: producto (texto), precio_entero (entero), precio_decimal (decimal con .) y en_oferta (booleano). Imprime cada una con su tipo usando type().",
+        "language": "python",
+        "starter_code": "# Crea las cuatro variables con los tipos correctos.\nproducto = \"...\"\nprecio_entero = ...\nprecio_decimal = ...\nen_oferta = ...\n\nprint(...)\nprint(...)\nprint(...)\nprint(...)",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "assign",
+            "min": 4,
+            "message": "Necesitas cuatro asignaciones: una por variable."
+          },
+          {
+            "type": "contains",
+            "value": "type(",
+            "message": "Usa type() para mostrar el tipo de cada variable."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 4,
+            "message": "Una impresión por variable."
+          },
+          {
+            "type": "not_contains",
+            "value": "input(",
+            "message": "No uses input(); asigna valores directamente."
+          }
+        ],
+        "hints": [
+          "Texto va entre comillas: producto = \"Laptop\".",
+          "Entero sin decimales: precio_entero = 1000.",
+          "Decimal con punto: precio_decimal = 999.99.",
+          "Booleano sin comillas: en_oferta = True."
+        ],
+        "solution": "producto = \"Laptop\"\nprecio_entero = 1000\nprecio_decimal = 999.99\nen_oferta = True\n\nprint(producto, type(producto))\nprint(precio_entero, type(precio_entero))\nprint(precio_decimal, type(precio_decimal))\nprint(en_oferta, type(en_oferta))"
+      },
+      "success_criteria": [
+        "Hay una variable de cada tipo: string, entero, decimal y booleano.",
+        "Se imprime el tipo de cada variable.",
+        "Los nombres describen qué guarda cada variable."
+      ],
+      "resource_ids": [
+        "res_python_tutorial",
+        "res_think_python"
+      ]
+    },
+    {
+      "id": "beg_07_listas_basicas",
+      "level_id": "beginner",
+      "order": 7,
+      "title": "Listas: guardar varias cosas",
+      "concept": "Crear y recorrer listas simples",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Necesitas guardar los nombres de tres estudiantes en un solo lugar, no en tres variables separadas. Mañana pueden ser cinco o diez. ¿Cómo guardas una cantidad variable de elementos en una sola estructura?",
+        "question": "¿Cómo creas una lista, le agregas elementos y recorres cada uno sin escribirlos individualmente?",
+        "constraints": [
+          "Crea una lista con al menos tres nombres.",
+          "Agrega un cuarto nombre con .append().",
+          "Recorre la lista con un bucle for e imprime cada nombre.",
+          "No escribas un print por cada nombre a mano."
+        ],
+        "reflection": "Una lista no es solo varios valores: es una sola caja que puede crecer."
+      },
+      "guide": {
+        "mental_model": "Una lista es una secuencia ordenada. Puedes acceder a cada elemento por su posición (índice), agregar al final con .append() y recorrer todos con for. Los índices empiezan en 0.",
+        "steps": [
+          {
+            "title": "1. Crea la lista",
+            "body": "nombres = [\"Ana\", \"Luis\", \"Marta\"] guarda tres strings en orden."
+          },
+          {
+            "title": "2. Agrega al final",
+            "body": "nombres.append(\"Carlos\") añade un cuarto elemento sin sobrescribir los anteriores."
+          },
+          {
+            "title": "3. Recorre con for",
+            "body": "for nombre en nombres: imprime cada uno. El cuerpo del bucle se repite una vez por elemento."
+          }
+        ],
+        "questions": [
+          "¿Qué índice tiene el primer elemento de la lista?",
+          "¿Qué ocurre si llamas a .append() dos veces con el mismo nombre?",
+          "¿Por qué no necesitas saber cuántos elementos tiene para recorrerla?"
+        ],
+        "common_mistakes": [
+          "Empezar a contar los índices en 1 en lugar de 0.",
+          "Escribir tres print() separados en lugar de usar un bucle.",
+          "Olvidar los paréntesis en .append()."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Crea una lista llamada estudiantes con tres nombres. Agrega un cuarto con .append(). Luego recorre la lista con un bucle for e imprime cada nombre.",
+        "language": "python",
+        "starter_code": "estudiantes = [\"Ana\", \"Luis\", \"Marta\"]\n\n# Agrega un cuarto estudiante.\n\n# Recorre e imprime cada nombre.\n",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "list",
+            "min": 1,
+            "message": "Falta crear la lista con corchetes."
+          },
+          {
+            "type": "contains",
+            "value": ".append(",
+            "message": "Usa .append() para agregar el cuarto estudiante."
+          },
+          {
+            "type": "ast",
+            "value": "for",
+            "min": 1,
+            "message": "Necesitas un bucle for para recorrer la lista."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Imprime cada nombre dentro del bucle."
+          }
+        ],
+        "hints": [
+          "estudiantes.append(\"Carlos\") agrega al final.",
+          "for nombre en estudiantes: recorre cada elemento.",
+          "El print va indentado bajo el for."
+        ],
+        "solution": "estudiantes = [\"Ana\", \"Luis\", \"Marta\"]\nestudiantes.append(\"Carlos\")\n\nfor nombre in estudiantes:\n    print(nombre)"
+      },
+      "success_criteria": [
+        "La lista tiene al menos tres nombres iniciales.",
+        "Se agrega un cuarto nombre con .append().",
+        "Cada nombre se imprime exactamente una vez mediante un bucle."
+      ],
+      "resource_ids": [
+        "res_python_lists",
+        "res_automate"
+      ]
+    },
+    {
+      "id": "beg_08_texto",
+      "level_id": "beginner",
+      "order": 8,
+      "title": "Texto: manipular strings",
+      "concept": "Métodos de string: longitud, mayúsculas, reemplazar",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Un sistema recibe nombres de usuarios en cualquier formato: «ana GARCIA», «  LUIS  », «marta». Quieres normalizarlos para que todos empiecen con mayúscula, el resto en minúscula y sin espacios sobrantes.",
+        "question": "¿Cómo transformas un string desordenado en uno limpio y consistente?",
+        "constraints": [
+          "Usa .strip() para quitar espacios sobrantes.",
+          "Usa .capitalize() o una combinación para dejar la primera letra en mayúscula.",
+          "Usa .replace() para cambiar una palabra por otra.",
+          "Imprime el resultado de cada transformación."
+        ],
+        "reflection": "Los strings no se pueden modificar en su lugar: cada método devuelve un string nuevo."
+      },
+      "guide": {
+        "mental_model": "Un string es inmutable: nunca cambias el original, creas uno nuevo con los métodos .strip(), .lower(), .upper(), .capitalize() y .replace(). Cada uno recibe el string, lo transforma y devuelve el resultado.",
+        "steps": [
+          {
+            "title": "1. Limpia los extremos",
+            "body": "nombre.strip() quita espacios al principio y al final."
+          },
+          {
+            "title": "2. Normaliza la capitalización",
+            "body": "nombre.capitalize() deja la primera letra en mayúscula y el resto en minúscula."
+          },
+          {
+            "title": "3. Reemplaza texto",
+            "body": "nombre.replace(\"antiguo\", \"nuevo\") cambia una subcadena por otra."
+          }
+        ],
+        "questions": [
+          "¿Qué devuelve \"  hola \".strip()?",
+          "¿Por qué no puedes hacer nombre[0] = \"A\"?",
+          "¿Qué diferencia hay entre .upper() y .capitalize()?"
+        ],
+        "common_mistakes": [
+          "Creer que .strip() modifica la variable original.",
+          "Usar .capitalize() en una frase completa y esperar que solo la primera palabra cambie.",
+          "Olvidar asignar el resultado a una variable."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Dado nombre = \"  ana GARCIA  \", normalízalo: quita espacios, deja la primera letra en mayúscula y el resto en minúscula. Después reemplaza «GARCIA» por «García» e imprime el resultado final.",
+        "language": "python",
+        "starter_code": "nombre = \"  ana GARCIA  \"\n\n# Normaliza el nombre.\n\nprint(...)",
+        "checks": [
+          {
+            "type": "contains",
+            "value": ".strip(",
+            "message": "Usa .strip() para quitar espacios sobrantes."
+          },
+          {
+            "type": "contains",
+            "value": ".capitalize(",
+            "message": "Usa .capitalize() para dejar la primera letra en mayúscula."
+          },
+          {
+            "type": "contains",
+            "value": ".replace(",
+            "message": "Usa .replace() para cambiar el apellido."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Imprime el resultado final."
+          }
+        ],
+        "hints": [
+          "Encadena los métodos: nombre.strip().capitalize().",
+          "Después usa .replace(\"GARCIA\", \"García\").",
+          "Cada método devuelve un string nuevo; asigna el resultado."
+        ],
+        "solution": "nombre = \"  ana GARCIA  \"\nnormalizado = nombre.strip().capitalize().replace(\"GARCIA\", \"García\")\nprint(normalizado)"
+      },
+      "success_criteria": [
+        "Se usa .strip() para quitar espacios.",
+        "Se usa .capitalize() para normalizar mayúsculas.",
+        "Se usa .replace() para corregir el apellido.",
+        "El resultado final se imprime."
+      ],
+      "resource_ids": [
+        "res_python_tutorial",
+        "res_think_python"
+      ]
+    },
+    {
+      "id": "beg_09_while",
+      "level_id": "beginner",
+      "order": 9,
+      "title": "Bucles while: repite mientras",
+      "concept": "Bucles while y condición de parada",
+      "minutes": 15,
+      "problem": {
+        "scenario": "Un contador disminuye desde 5 hasta 1 y luego dice «¡Despegue!». No sabes cuántas vueltas necesita un proceso, solo sabes que debe parar cuando se cumpla una condición.",
+        "question": "¿Cómo repites una acción mientras una condición sea verdadera y te detengas cuando deje de serlo?",
+        "constraints": [
+          "Usa un bucle while con una variable de contador.",
+          "El contador debe cambiar en cada vuelta (decrementar o incrementar).",
+          "Cuando termine, imprime un mensaje final.",
+          "Evita bucles infinitos: la condición debe dejar de ser verdadera."
+        ],
+        "reflection": "Un while repite mientras algo sea verdadero; un for recorre una secuencia. Elige while cuando no sepas de antemano cuántas veces repetirás.",
+        "resource_ids": [
+          "res_python_control",
+          "res_think_python"
+        ]
+      },
+      "guide": {
+        "mental_model": "while condición: repite el cuerpo mientras la condición sea verdadera. Dentro del cuerpo debes cambiar algo que haga que la condición llegue a ser falsa, o el bucle nunca terminará.",
+        "steps": [
+          {
+            "title": "1. Define la condición de parada",
+            "body": "contador > 0: el bucle sigue mientras el contador sea positivo."
+          },
+          {
+            "title": "2. Cambia el contador dentro del bucle",
+            "body": "contador -= 1 disminuye en cada vuelta. Sin esto, el bucle es infinito."
+          },
+          {
+            "title": "3. Escribe lo que ocurre después",
+            "body": "Cualquier línea fuera del bucle (sin indentación) se ejecuta cuando la condición deja de ser verdadera."
+          }
+        ],
+        "questions": [
+          "¿Qué ocurre si olvidas restar 1 al contador?",
+          "¿Qué diferencia hay entre while y for?",
+          "¿Qué valor tiene el contador cuando el bucle termina?"
+        ],
+        "common_mistakes": [
+          "Olvidar cambiar la variable de la condición, creando un bucle infinito.",
+          "Usar = en lugar de != o > en la condición.",
+          "Escribir el mensaje final indentado dentro del bucle."
+        ]
+      },
+      "exercise": {
+        "type": "code",
+        "prompt": "Escribe un bucle while que cuente desde 5 hasta 1 imprimiendo cada número, y al termine imprima «¡Despegue!».",
+        "language": "python",
+        "starter_code": "contador = 5\n\n# Escribe el bucle while aquí.\n\nprint(\"¡Despegue!\")",
+        "checks": [
+          {
+            "type": "ast",
+            "value": "while",
+            "min": 1,
+            "message": "Necesitas un bucle while."
+          },
+          {
+            "type": "contains",
+            "value": "-=",
+            "message": "El contador debe disminuir en cada vuelta para evitar un bucle infinito."
+          },
+          {
+            "type": "count",
+            "value": "print(",
+            "min": 1,
+            "message": "Imprime dentro del bucle y el mensaje final después."
+          },
+          {
+            "type": "not_contains",
+            "value": "for ",
+            "message": "Este ejercicio pide un bucle while, no for."
+          }
+        ],
+        "hints": [
+          "while contador > 0: repite mientras sea positivo.",
+          "contador -= 1 resta 1 en cada vuelta.",
+          "El print de «¡Despegue!» va fuera del bucle, sin indentación."
+        ],
+        "solution": "contador = 5\nwhile contador > 0:\n    print(contador)\n    contador -= 1\nprint(\"¡Despegue!\")"
+      },
+      "success_criteria": [
+        "El bucle while imprime del 5 al 1.",
+        "El contador disminuye en cada vuelta.",
+        "«¡Despegue!» se imprime una sola vez después del bucle."
+      ]
+    }
+  ]
+}
