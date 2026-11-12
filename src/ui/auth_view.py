@@ -27,37 +27,36 @@ class AuthView(tk.Frame):
         center = tk.Frame(self, bg=theme.BG)
         center.place(relx=0.5, rely=0.5, anchor="center")
 
-        card = widgets.Card(center, padding=32)
+        card = widgets.Card(center, padding=40)
         card.pack()
         body = card.body
 
         widgets.mk_label(
             body,
             "CODECORE",
-            size=20,
+            size=22,
             bold=True,
             color=theme.ACCENT,
         ).pack(anchor="w")
         widgets.mk_label(
             body,
             "Aprende a programar pensando",
-            size=11,
+            size=12,
             color=theme.MUTED,
-        ).pack(anchor="w", pady=(0, 24))
+        ).pack(anchor="w", pady=(0, 28))
 
-        self.message_var = tk.StringVar(value="")
         self.message_label = widgets.mk_label(
             body,
             "",
             size=10,
             color=theme.DANGER,
-            wrap=340,
+            wrap=360,
         )
-        self.message_label.pack(anchor="w", pady=(0, 16))
+        self.message_label.pack(anchor="w", pady=(0, 20))
 
         # Selector de modo
         mode_row = tk.Frame(body, bg=theme.SURFACE)
-        mode_row.pack(fill="x", pady=(0, 16))
+        mode_row.pack(fill="x", pady=(0, 20))
 
         self.btn_login_mode = widgets.mk_button(
             mode_row,
@@ -65,8 +64,8 @@ class AuthView(tk.Frame):
             self._set_login_mode,
             kind="primary" if self.mode == "login" else "ghost",
             size=10,
-            padx=16,
-            pady=8,
+            padx=18,
+            pady=10,
         )
         self.btn_login_mode.pack(side="left")
 
@@ -76,19 +75,19 @@ class AuthView(tk.Frame):
             self._set_register_mode,
             kind="primary" if self.mode == "register" else "ghost",
             size=10,
-            padx=16,
-            pady=8,
+            padx=18,
+            pady=10,
         )
-        self.btn_register_mode.pack(side="left", padx=(10, 0))
+        self.btn_register_mode.pack(side="left", padx=(12, 0))
 
-        tk.Frame(body, bg=theme.SURFACE, height=8).pack()
+        tk.Frame(body, bg=theme.SURFACE, height=10).pack()
 
         # Formulario (se reconstruye al cambiar de modo)
         self.form_frame = tk.Frame(body, bg=theme.SURFACE)
         self.form_frame.pack(fill="x")
         self._build_form()
 
-        tk.Frame(body, bg=theme.SURFACE, height=12).pack()
+        tk.Frame(body, bg=theme.SURFACE, height=16).pack()
 
         # Botón principal
         self.btn_action = widgets.mk_button(
@@ -96,7 +95,7 @@ class AuthView(tk.Frame):
             "Entrar" if self.mode == "login" else "Crear cuenta",
             self._on_action,
             kind="primary",
-            width=22,
+            width=24,
         )
         self.btn_action.pack(anchor="e")
 
@@ -111,14 +110,14 @@ class AuthView(tk.Frame):
             self.form_frame,
             placeholder="Usuario",
         )
-        self.entry_user.pack(fill="x", pady=(0, 10))
+        self.entry_user.pack(fill="x", pady=(0, 12))
 
         self.entry_pass = widgets.mk_entry_styled(
             self.form_frame,
             placeholder="Contraseña",
             show="*",
         )
-        self.entry_pass.pack(fill="x", pady=(0, 6))
+        self.entry_pass.pack(fill="x", pady=(0, 8))
 
         if self.mode == "register":
             self.entry_pass_confirm = widgets.mk_entry_styled(
@@ -126,7 +125,7 @@ class AuthView(tk.Frame):
                 placeholder="Repetir contraseña",
                 show="*",
             )
-            self.entry_pass_confirm.pack(fill="x", pady=(0, 14))
+            self.entry_pass_confirm.pack(fill="x", pady=(0, 16))
 
     def _set_login_mode(self) -> None:
         self.mode = "login"
@@ -145,11 +144,9 @@ class AuthView(tk.Frame):
         self._clear_message()
 
     def _clear_message(self) -> None:
-        self.message_var.set("")
         self.message_label.configure(text="", fg=theme.DANGER)
 
     def _show_message(self, text: str, error: bool = True) -> None:
-        self.message_var.set(text)
         self.message_label.configure(
             text=text, fg=theme.DANGER if error else theme.SUCCESS
         )
@@ -164,21 +161,24 @@ class AuthView(tk.Frame):
             self._show_message("Usuario y contraseña son requeridos.")
             return
 
-        if self.mode == "login":
-            ok, msg = self.auth.login(username, password)
-            if ok:
-                self._show_message(msg, error=False)
-                self.after(600, lambda: self.on_auth_success(username))
+        try:
+            if self.mode == "login":
+                ok, msg = self.auth.login(username, password)
+                if ok:
+                    self._show_message(msg, error=False)
+                    self.app.after(700, lambda: self.on_auth_success(username))
+                else:
+                    self._show_message(msg)
             else:
-                self._show_message(msg)
-        else:
-            confirm = self.entry_pass_confirm.get()
-            if password != confirm:
-                self._show_message("Las contraseñas no coinciden.")
-                return
-            ok, msg = self.auth.register(username, password)
-            if ok:
-                self._show_message(msg, error=False)
-                self.after(900, lambda: self.on_auth_success(username))
-            else:
-                self._show_message(msg)
+                confirm = self.entry_pass_confirm.get()
+                if password != confirm:
+                    self._show_message("Las contraseñas no coinciden.")
+                    return
+                ok, msg = self.auth.register(username, password)
+                if ok:
+                    self._show_message(msg, error=False)
+                    self.app.after(1000, lambda: self.on_auth_success(username))
+                else:
+                    self._show_message(msg)
+        except Exception as exc:  # noqa: BLE001 - mostrar error al usuario
+            self._show_message(f"Error inesperado: {exc}")

@@ -131,6 +131,8 @@ class CodeCoreApp(tk.Tk):
             # Sesión activa: entra directamente sin pedir credenciales.
             self._on_auth_success(saved_user)
         else:
+            # Pantalla de login: sin barra lateral.
+            self.hide_sidebar()
             self.navigate(AuthView, on_auth_success=self._on_auth_success)
 
     def _on_auth_success(self, username: str) -> None:
@@ -139,6 +141,8 @@ class CodeCoreApp(tk.Tk):
         self.store = ProgressStore(path=user_progress_file(username))
         self.current_username = username
         self.progress = self.store.load()
+        # Restaura la barra lateral para el resto de la app.
+        self.show_sidebar()
         self.navigate(WelcomeView)
         self._set_active("welcome")
         self.refresh_shell()
@@ -161,6 +165,7 @@ class CodeCoreApp(tk.Tk):
         self.progress = None
         self.store = None
         self.current_username = None
+        self.hide_sidebar()
         self._start_auth_flow()
 
     # ------------------------------------------------------------------
@@ -180,11 +185,11 @@ class CodeCoreApp(tk.Tk):
             pass
 
     def _build_shell(self) -> None:
-        sidebar = tk.Frame(self, bg=theme.SIDEBAR, width=240)
-        sidebar.pack(side="left", fill="y")
-        sidebar.pack_propagate(False)
+        self.sidebar = tk.Frame(self, bg=theme.SIDEBAR, width=240)
+        self.sidebar.pack(side="left", fill="y")
+        self.sidebar.pack_propagate(False)
 
-        logo = tk.Frame(sidebar, bg=theme.SIDEBAR)
+        logo = tk.Frame(self.sidebar, bg=theme.SIDEBAR)
         logo.pack(fill="x", padx=22, pady=(24, 18))
         widgets.mk_label(
             logo, APP_NAME, size=19, bold=True, color="#FFFFFF", bg=theme.SIDEBAR
@@ -197,9 +202,9 @@ class CodeCoreApp(tk.Tk):
             bg=theme.SIDEBAR,
         ).pack(anchor="w", pady=(1, 0))
 
-        tk.Frame(sidebar, bg="#1E293B", height=1).pack(fill="x", padx=18)
+        tk.Frame(self.sidebar, bg="#1E293B", height=1).pack(fill="x", padx=18)
 
-        nav = tk.Frame(sidebar, bg=theme.SIDEBAR)
+        nav = tk.Frame(self.sidebar, bg=theme.SIDEBAR)
         nav.pack(fill="x", pady=(12, 0))
         for index, (key, label) in enumerate(NAV_ITEMS):
             item = NavItem(nav, label, lambda key=key: self._open_nav(key))
@@ -208,9 +213,9 @@ class CodeCoreApp(tk.Tk):
             self.bind(f"<Control-Key-{index + 1}>", lambda _event, key=key: self._open_nav(key))
 
         # Separador antes del footer
-        tk.Frame(sidebar, bg="#1E293B", height=1).pack(fill="x", padx=18, pady=(22, 0))
+        tk.Frame(self.sidebar, bg="#1E293B", height=1).pack(fill="x", padx=18, pady=(22, 0))
 
-        footer = tk.Frame(sidebar, bg=theme.SIDEBAR)
+        footer = tk.Frame(self.sidebar, bg=theme.SIDEBAR)
         footer.pack(side="bottom", fill="x", padx=20, pady=(0, 22))
         tk.Frame(footer, bg="#1E293B", height=1).pack(fill="x", pady=(0, 14))
         widgets.mk_label(
@@ -255,6 +260,18 @@ class CodeCoreApp(tk.Tk):
         ).pack(anchor="e")
 
         self.content = tk.Frame(self, bg=theme.BG)
+        self.content.pack(side="left", fill="both", expand=True)
+
+    def hide_sidebar(self) -> None:
+        """Oculta la barra lateral y expande el contenido a todo el ancho."""
+        self.sidebar.pack_forget()
+        self.content.pack(side="left", fill="both", expand=True)
+
+    def show_sidebar(self) -> None:
+        """Restaura la barra lateral y el ancho normal del contenido."""
+        self.content.pack_forget()
+        self.sidebar.pack(side="left", fill="y")
+        self.sidebar.pack_propagate(False)
         self.content.pack(side="left", fill="both", expand=True)
 
     # ------------------------------------------------------------------
