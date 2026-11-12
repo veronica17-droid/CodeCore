@@ -199,7 +199,7 @@ def mk_entry_styled(
         font=theme.font(11),
         bg=theme.SURFACE,
         fg=theme.MUTED,
-        insertcolor=theme.TEXT,
+        insertbackground=theme.TEXT,
         relief="flat",
         bd=0,
         highlightthickness=1,

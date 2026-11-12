@@ -95,7 +95,7 @@ def apply_theme(root: tk.Misc) -> None:
         fieldbackground=SURFACE,
         foreground=TEXT,
         bordercolor=BORDER,
-        insertcolor=TEXT,
+        insertbackground=TEXT,
         padding=6,
     )
     style.configure(
