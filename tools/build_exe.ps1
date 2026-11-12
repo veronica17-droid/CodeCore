@@ -1,10 +1,12 @@
 <#
 .SYNOPSIS
-    Genera dist\CodeCore.exe con PyInstaller.
+    Genera CodeCore.exe con PyInstaller y lo deja en tu carpeta de trabajo.
 
 .DESCRIPTION
     Comprueba el entorno, valida el contenido, ejecuta las pruebas y empaqueta.
-    No se ejecuta solo: hay que invocarlo explicitamente.
+    El ejecutable queda en dist\CodeCore.exe y tambien se copia a la carpeta
+    desde donde lanzaste el script (tu carpeta actual), para que lo encuentres
+    facilmente. No se ejecuta solo: hay que invocarlo explicitamente.
 
 .EXAMPLE
     .\tools\build_exe.ps1
@@ -31,6 +33,7 @@ try {
 }
 
 $root = Split-Path -Parent $PSScriptRoot
+$ubicacionOrigen = Get-Location
 Push-Location $root
 
 function Write-CommandOutput {
@@ -112,6 +115,12 @@ try {
     $sizeMb = [math]::Round((Get-Item $exe).Length / 1MB, 1)
     Write-Host "Listo: $exe ($sizeMb MB)" -ForegroundColor Green
     Write-Host "Prueba el .exe en una maquina sin Python y revisa docs\05-empaquetado.md." -ForegroundColor Green
+
+    # Deja una copia en la carpeta donde se ejecuto el script (tu carpeta actual).
+    $destino = Join-Path $ubicacionOrigen "CodeCore.exe"
+    Copy-Item $exe $destino -Force
+    $sizeMbDest = [math]::Round((Get-Item $destino).Length / 1MB, 1)
+    Write-Host "Tambien queda aqui: $destino ($sizeMbDest MB)" -ForegroundColor Green
 }
 finally {
     Pop-Location
