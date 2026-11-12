@@ -16,13 +16,16 @@ from config import (
 )
 from core.auth import AuthStore
 from core.content import ContentRepository
+from core.onboarding import nivel_a_nombre
 from core.paths import resource_path, user_progress_file
+from core.profile_store import ProfileStore
 from core.progress import ProgressStore
 from ui import theme, widgets
 from ui.about_view import AboutView
 from ui.auth_view import AuthView
 from ui.library_view import LibraryView
 from ui.lesson_view import LessonView
+from ui.onboarding_view import OnboardingView
 from ui.path_view import PathView
 from ui.progress_view import ProgressView
 from ui.welcome_view import WelcomeView
@@ -128,24 +131,74 @@ class CodeCoreApp(tk.Tk):
         auth_store = AuthStore()
         saved_user = auth_store.current_user()
         if saved_user:
-            # Sesión activa: entra directamente sin pedir credenciales.
-            self._on_auth_success(saved_user)
+            # Sesión activa: carga el perfil del usuario y entra directamente.
+            self._restore_user_session(saved_user)
         else:
             # Pantalla de login: sin barra lateral.
             self.hide_sidebar()
             self.navigate(AuthView, on_auth_success=self._on_auth_success)
 
+    def _restore_user_session(self, username: str) -> None:
+        """Carga el perfil y progreso de un usuario que ya tiene sesión guardada."""
+        profile_store = ProfileStore()
+        profile = profile_store.load(username)
+        if profile:
+            self.current_username = username
+            self.store = ProgressStore(path=user_progress_file(username))
+            self.progress = self.store.load()
+            # Aplica el nivel del perfil si el progreso no tiene uno.
+            if self.progress.level is None and profile.level:
+                self.store.set_level(self.progress, profile.level)
+                self.save_progress()
+            self.show_sidebar()
+            self.navigate(WelcomeView)
+            self._set_active("welcome")
+            self.refresh_shell()
+        else:
+            # No hay perfil: ir al login para crear uno.
+            self.hide_sidebar()
+            self.navigate(AuthView, on_auth_success=self._on_auth_success)
+
     def _on_auth_success(self, username: str) -> None:
-        """Tras login/registro exitoso: carga progreso del usuario y abre Inicio."""
+        """Tras login/registro exitoso: verifica si necesita encuesta de onboarding."""
         self.auth_store = AuthStore()
         self.store = ProgressStore(path=user_progress_file(username))
         self.current_username = username
-        self.progress = self.store.load()
-        # Restaura la barra lateral para el resto de la app.
-        self.show_sidebar()
-        self.navigate(WelcomeView)
-        self._set_active("welcome")
-        self.refresh_shell()
+
+        profile_store = ProfileStore()
+        profile = profile_store.load(username)
+
+        if profile and profile.survey_completed:
+            # Ya hizo la encuesta: carga su progreso y entra a la app.
+            self.progress = self.store.load()
+            if self.progress.level is None and profile.level:
+                self.store.set_level(self.progress, profile.level)
+                self.save_progress()
+            self.show_sidebar()
+            self.navigate(WelcomeView)
+            self._set_active("welcome")
+            self.refresh_shell()
+        else:
+            # Primera vez: mostrar encuesta de onboarding (sin barra lateral).
+            self.hide_sidebar()
+            self.navigate(OnboardingView, username=username)
+
+    def on_onboarding_complete(self, username: str) -> None:
+        """Tras completar la encuesta: carga progreso y abre Inicio."""
+        profile_store = ProfileStore()
+        profile = profile_store.load(username)
+        if profile:
+            self.current_username = username
+            self.store = ProgressStore(path=user_progress_file(username))
+            self.progress = self.store.load()
+            # Aplica el nivel asignado por la encuesta al progreso.
+            if self.progress.level is None and profile.level:
+                self.store.set_level(self.progress, profile.level)
+                self.save_progress()
+            self.show_sidebar()
+            self.navigate(WelcomeView)
+            self._set_active("welcome")
+            self.refresh_shell()
 
     def _start_skip_auth_session(self) -> None:
         """Modo sin auth (tests / smoke test): crea progreso temporal."""
